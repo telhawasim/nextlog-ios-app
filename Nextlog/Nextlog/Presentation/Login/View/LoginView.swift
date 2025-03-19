@@ -11,11 +11,8 @@ struct LoginView: View {
     
     //MARK: - PROPERTIES -
     
-    //State
-    @State private var isAdmin: Bool = true
-    @State private var email: String = ""
-    @State private var password: String = ""
-    @State private var id: String = ""
+    //StateObject
+    @StateObject var viewModel: LoginView.ViewModel
     
     //MARK: - VIEWS -
     var body: some View {
@@ -38,14 +35,14 @@ struct LoginView: View {
             // TextFields
             VStack(spacing: 35) {
                 // Email Textfield
-                LoginEmailTextField(value: self.$email)
+                LoginEmailTextField(value: self.$viewModel.email)
                 // Check which textfield to show according to user type
-                if (self.isAdmin) {
+                if (self.viewModel.isAdmin) {
                     // Password Textfield
-                    LoginPasswordTextField(value: self.$password)
+                    LoginPasswordTextField(value: self.$viewModel.password)
                 } else {
                     // ID Textfield
-                    LoginIDTextField(value: self.$id)
+                    LoginIDTextField(value: self.$viewModel.id)
                 }
             }
             .padding(.top, 80)
@@ -57,12 +54,16 @@ struct LoginView: View {
                 AppCustomButton(
                     title: "Log In",
                     onPress: {
-                        
+                        if (self.viewModel.isAdmin) {
+                            if (self.viewModel.validationForLoginAsAdmin()) {
+                                self.viewModel.loginAsAdmin()
+                            }
+                        }
                     }
                 )
                 // Continue Button
                 Button(action: {
-                    self.isAdmin.toggle()
+                    self.viewModel.isAdmin.toggle()
                 }, label: {
                     Text(self.handleContinueButtonTitle())
                         .font(.getSemibold(.h16))
@@ -74,7 +75,13 @@ struct LoginView: View {
         }
         .padding(.top, 116)
         .padding(.horizontal, 16)
-        .animation(.default, value: self.isAdmin)
+        .animation(.default, value: self.viewModel.isAdmin)
+        // In case login is successfully
+        .onChange(of: self.viewModel.isLoginSuccessfully) { (oldValue, newValue) in
+            if (newValue) {
+                
+            }
+        }
     }
 }
 
@@ -83,7 +90,7 @@ extension LoginView {
     
     //MARK: - HANDLE CONTINUE BUTTON TITLE -
     private func handleContinueButtonTitle() -> String {
-        if (self.isAdmin) {
+        if (self.viewModel.isAdmin) {
             return "Continue as Employee"
         } else {
             return "Continue as Admin"
@@ -92,5 +99,7 @@ extension LoginView {
 }
 
 #Preview {
-    LoginView()
+    LoginView(
+        viewModel: LoginView.ViewModel(container: DependencyContainer())
+    )
 }

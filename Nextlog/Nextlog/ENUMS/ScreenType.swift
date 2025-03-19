@@ -6,5 +6,5 @@
 //
 
 enum ScreenType: Hashable {
-    case login
+    case login(LoginView.ViewModel)
 }
