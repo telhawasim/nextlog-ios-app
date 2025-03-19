@@ -9,9 +9,13 @@ import SwiftUI
 
 @main
 struct NextlogApp: App {
+    
+    @StateObject var router = Routing()
+    
     var body: some Scene {
         WindowGroup {
-            ContentView()
+            SplashView()
         }
+        .environmentObject(self.router)
     }
 }
