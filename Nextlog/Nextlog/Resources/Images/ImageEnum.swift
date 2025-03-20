@@ -17,4 +17,8 @@ enum ImageEnum: String {
     case icTabbarHome = "ic_tabbar_home"
     case icTabbarLogout = "ic_tabbar_logout"
     case icEmployeeEmptyState = "ic_employee_empty_state"
+    case icCross = "ic_cross"
+    case icCamera = "ic_camera"
+    case icChevronDown = "chevron.down"
+    case icCalendar = "ic_calendar"
 }

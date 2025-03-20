@@ -11,6 +11,7 @@ struct TabbarView: View {
     
     //MARK: - PROPERTIES -
     
+    //State
     @State private var selectedTab: TabbarType = .home
     
     //MARK: - VIEWS -
@@ -27,7 +28,7 @@ struct TabbarView: View {
             CustomTabbarView(
                 selectedTab: self.$selectedTab
             )
-            .padding(.bottom, -15)
+            .padding(.bottom, -10)
         }
         .animation(.default.speed(1.5), value: self.selectedTab)
     }

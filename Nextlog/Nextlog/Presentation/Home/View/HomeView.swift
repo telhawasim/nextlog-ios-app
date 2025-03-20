@@ -9,6 +9,11 @@ import SwiftUI
 
 struct HomeView: View {
     
+    //MARK: - PROPERTIES -
+    
+    //Normal
+    var isShowListing: Bool = false
+    
     //MARK: - VIEWS -
     var body: some View {
         // Parent View
@@ -92,14 +97,19 @@ struct HomeView: View {
                     })
                 }
                 .padding(.top, 27)
-                // Listing
-                LazyVStack(spacing: 20) {
-                    ForEach(0...4, id: \.self) { index in
-                        HomeEmployeeListRowView()
-                            .padding(.bottom, index == 4 ? 60 : 0)
+                if (self.isShowListing) {
+                    // Listing
+                    LazyVStack(spacing: 20) {
+                        ForEach(0...4, id: \.self) { index in
+                            HomeEmployeeListRowView()
+                                .padding(.bottom, index == 4 ? 65 : 0)
+                        }
                     }
+                    .padding(.top, 18)
+                } else {
+                    AppEmptyState(emptyState: .employeeListing)
+                        .padding(.top, 50)
                 }
-                .padding(.top, 18)
             }
             .padding(.horizontal, 16)
             .padding(.top, 10)
