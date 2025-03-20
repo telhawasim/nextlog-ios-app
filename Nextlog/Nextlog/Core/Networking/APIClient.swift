@@ -65,7 +65,6 @@ class URLSessionAPIClient<EndpointType: APIEndpoint>: APIClient {
     //MARK: - MULTI-PART REQUEST -
     func multipartRequest<T: Decodable>(
         to endpoint: EndpointType,
-        parameters: [String: String],
         image: UIImage?,
         imageKey: String = "avatar"
     ) -> AnyPublisher<T, APIError> {
@@ -79,7 +78,7 @@ class URLSessionAPIClient<EndpointType: APIEndpoint>: APIClient {
         var body = Data()
         
         // Append parameters
-        for (key, value) in parameters {
+        for (key, value) in endpoint.parameters ?? [:] {
             body.append("--\(boundary)\r\n".data(using: .utf8)!)
             body.append("Content-Disposition: form-data; name=\"\(key)\"\r\n\r\n".data(using: .utf8)!)
             body.append("\(value)\r\n".data(using: .utf8)!)

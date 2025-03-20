@@ -9,6 +9,7 @@ import Foundation
 
 enum APIService: APIEndpoint {
     case loginAsAdmin(email: String, password: String)
+    case addEmployee(name: String, email: String)
     
     //MARK: - BASE URL -
     var baseURL: URL {
@@ -20,6 +21,8 @@ enum APIService: APIEndpoint {
         switch self {
         case .loginAsAdmin:
             return "admin/login"
+        case .addEmployee:
+            return "employee/add"
         }
     }
     
@@ -28,13 +31,20 @@ enum APIService: APIEndpoint {
         switch self {
         case .loginAsAdmin:
             return .POST
+        case .addEmployee:
+            return .POST
         }
     }
     
     //MARK: - HEADERS -
     var headers: [String : String]? {
         switch self {
-        case .loginAsAdmin:
+        case .addEmployee:
+            return [
+                "Content-Type": "multipart/form-data",
+                "Authorization": "Bearer \(AppStorage.accessToken ?? "")"
+            ]
+        default:
             return [
                 "Content-Type": "application/json",
                 "Authorization": "Bearer \(AppStorage.accessToken ?? "")"
@@ -49,6 +59,11 @@ enum APIService: APIEndpoint {
             return [
                 "email": email,
                 "password": password
+            ]
+        case .addEmployee(let name, let email):
+            return [
+                "name": name,
+                "email": email
             ]
         }
     }
