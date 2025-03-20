@@ -76,6 +76,9 @@ struct LoginView: View {
         .padding(.top, 116)
         .padding(.horizontal, 16)
         .animation(.default, value: self.viewModel.isAdmin)
+        .alert(isPresented: self.$viewModel.isShowErrorAlert) {
+            Alert(title: Text("Error"), message: Text(self.viewModel.errorMessage))
+        }
         // In case login is successfully
         .onChange(of: self.viewModel.isLoginSuccessfully) { (oldValue, newValue) in
             if (newValue) {

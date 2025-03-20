@@ -11,10 +11,11 @@
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
-		09AC329C2D8B2E560068643A /* Exceptions for "Nextlog" folder in "Nextlog" target */ = {
+		096176BF2D8BDFFD00C00A33 /* Exceptions for "Nextlog" folder in "Nextlog" target */ = {
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
 			membershipExceptions = (
 				Info.plist,
+				"Preview Content/Preview Assets.xcassets",
 			);
 			target = 09C1AEE82D8B2BF1009D0C51 /* Nextlog */;
 		};
@@ -24,7 +25,7 @@
 		09C1AEEB2D8B2BF1009D0C51 /* Nextlog */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
 			exceptions = (
-				09AC329C2D8B2E560068643A /* Exceptions for "Nextlog" folder in "Nextlog" target */,
+				096176BF2D8BDFFD00C00A33 /* Exceptions for "Nextlog" folder in "Nextlog" target */,
 			);
 			path = Nextlog;
 			sourceTree = "<group>";
@@ -274,6 +275,7 @@
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				IPHONEOS_DEPLOYMENT_TARGET = 18.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -304,6 +306,7 @@
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				IPHONEOS_DEPLOYMENT_TARGET = 18.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",

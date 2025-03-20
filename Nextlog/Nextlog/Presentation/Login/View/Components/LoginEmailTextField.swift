@@ -26,6 +26,8 @@ struct LoginEmailTextField: View {
                 Text("Please enter email")
             })
             .font(.getRegular(.h16))
+            .autocorrectionDisabled(true)
+            .textInputAutocapitalization(.never)
             // Divider
             Divider()
         }

@@ -23,6 +23,8 @@ extension LoginView {
         @Published var email: String = ""
         @Published var password: String = ""
         @Published var id: String = ""
+        @Published var errorMessage: String = ""
+        @Published var isShowErrorAlert: Bool = false
         @Published var isLoginSuccessfully: Bool = false
         
         //MARK: - INITIALIZER -
@@ -69,10 +71,17 @@ extension LoginView.ViewModel {
             errorMessage = "Password cannot be empty"
         }
         
-        if let _ = errorMessage {
+        if let error = errorMessage {
+            self.handleErrorMessage(error)
             return false
         } else {
             return true
         }
+    }
+    
+    //MARK: - HANDLE ERROR MESSAGE -
+    private func handleErrorMessage(_ message: String) {
+        self.errorMessage = message
+        self.isShowErrorAlert = true
     }
 }

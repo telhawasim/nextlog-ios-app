@@ -32,11 +32,15 @@ struct LoginPasswordTextField: View {
                         Text("Please enter password")
                     })
                     .font(.getRegular(.h16))
+                    .autocorrectionDisabled(true)
+                    .textInputAutocapitalization(.never)
                 } else {
                     SecureField(text: self.$value, label: {
                         Text("Please enter password")
                     })
                     .font(.getRegular(.h16))
+                    .autocorrectionDisabled(true)
+                    .textInputAutocapitalization(.never)
                 }
                 // Spacer
                 Spacer()
