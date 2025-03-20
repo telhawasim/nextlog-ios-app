@@ -11,6 +11,7 @@ struct TabbarView: View {
     
     //MARK: - PROPERTIES -
     
+    @StateObject var viewModel: TabbarView.ViewModel
     //State
     @State private var selectedTab: TabbarType = .home
     
@@ -19,7 +20,7 @@ struct TabbarView: View {
         ZStack(alignment: .bottom) {
             switch self.selectedTab {
             case .home:
-                HomeView()
+                HomeView(viewModel: HomeView.ViewModel(container: self.viewModel.container))
             case .employees:
                 EmployeesView()
             case .logout:
@@ -35,5 +36,7 @@ struct TabbarView: View {
 }
 
 #Preview {
-    TabbarView()
+    TabbarView(
+        viewModel: TabbarView.ViewModel(container: DependencyContainer())
+    )
 }

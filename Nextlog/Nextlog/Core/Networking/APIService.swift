@@ -12,7 +12,7 @@ enum APIService: APIEndpoint {
     
     //MARK: - BASE URL -
     var baseURL: URL {
-        return URL(string: "http://127.0.0.1:8080/")!
+        return URL(string: "http://192.168.31.221:8080/")!
     }
     
     //MARK: - PATH -
@@ -35,7 +35,10 @@ enum APIService: APIEndpoint {
     var headers: [String : String]? {
         switch self {
         case .loginAsAdmin:
-            return ["Content-Type": "application/json"]
+            return [
+                "Content-Type": "application/json",
+                "Authorization": "Bearer \(AppStorage.accessToken ?? "")"
+            ]
         }
     }
     

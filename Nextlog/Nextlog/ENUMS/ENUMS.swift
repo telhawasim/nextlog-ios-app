@@ -9,6 +9,9 @@ import Foundation
 
 enum ScreenType: Hashable {
     case login(LoginView.ViewModel)
+    case tabbar(TabbarView.ViewModel)
+    case employeeDetails
+    case addEmployee(AddEmployeeView.ViewModel)
 }
 
 enum FontSize: CGFloat {

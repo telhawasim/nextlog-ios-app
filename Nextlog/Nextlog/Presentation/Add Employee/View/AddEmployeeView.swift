@@ -11,6 +11,11 @@ struct AddEmployeeView: View {
     
     //MARK: - PROPERTIES -
     
+    //EnvironmentObject
+    @EnvironmentObject var router: Routing
+    //StateObject
+    @StateObject var viewModel: AddEmployeeView.ViewModel
+    //State
     @State private var name: String = ""
     @State private var designation: String = ""
     @State private var department: String = ""
@@ -34,7 +39,7 @@ struct AddEmployeeView: View {
                     Spacer()
                     // Cross Button
                     Button(action: {
-                        
+                        self.router.pop()
                     }, label: {
                         Image(ImageEnum.icCross.rawValue)
                             .resizable()
@@ -110,5 +115,7 @@ struct AddEmployeeView: View {
 }
 
 #Preview {
-    AddEmployeeView()
+    AddEmployeeView(
+        viewModel: AddEmployeeView.ViewModel(container: DependencyContainer())
+    )
 }

@@ -53,7 +53,9 @@ extension LoginView.ViewModel {
             } receiveValue: { [weak self] response in
                 guard let self = self else { return }
                 
-                print(response)
+                AppStorage.user = response?.data
+                AppStorage.accessToken = response?.accessToken
+                
                 self.isLoginSuccessfully = true
             }
             .store(in: &self.cancellables)

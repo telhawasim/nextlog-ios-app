@@ -11,6 +11,7 @@ struct EmployeesView: View {
     
     //MARK: - PROPERTIES -
     
+    @EnvironmentObject var router: Routing
     //State
     @State private var search: String = ""
     
@@ -65,6 +66,9 @@ struct EmployeesView: View {
                 LazyVStack(spacing: 20) {
                     ForEach(0...10, id: \.self) { index in
                         HomeEmployeeListRowView()
+                            .onTapGesture {
+                                self.router.push(.employeeDetails)
+                            }
                     }
                 }
                 .padding(.top, 18)

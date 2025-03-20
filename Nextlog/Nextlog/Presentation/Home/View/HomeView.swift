@@ -11,6 +11,12 @@ struct HomeView: View {
     
     //MARK: - PROPERTIES -
     
+    //Environment
+    @Environment(\.colorScheme) var colorScheme
+    //EnvironmentObject
+    @EnvironmentObject var router: Routing
+    //StateObject
+    @StateObject var viewModel: HomeView.ViewModel
     //Normal
     var isShowListing: Bool = false
     
@@ -30,7 +36,7 @@ struct HomeView: View {
                     // Add Employee Button
                     HomeAddEmployeeButtonView(
                         onPress: {
-                            
+                            self.navigateToAddEmployee()
                         }
                     )
                 }
@@ -60,11 +66,11 @@ struct HomeView: View {
                             VStack(alignment: .leading) {
                                 // Total Employee
                                 Text("0")
-                                    .foregroundStyle(Color.white)
+                                    .foregroundStyle(self.colorScheme == .dark ? Color.black : Color.white)
                                     .font(.getBold(.h40))
                                 // Title
                                 Text("Total Employees")
-                                    .foregroundStyle(Color.white)
+                                    .foregroundStyle(self.colorScheme == .dark ? Color.black : Color.white)
                                     .font(.getMedium(.h14))
                             }
                         }
@@ -74,7 +80,7 @@ struct HomeView: View {
                         Image(ImageEnum.icLogo.rawValue)
                             .resizable()
                             .aspectRatio(contentMode: .fit)
-                            .foregroundStyle(Color.white)
+                            .foregroundStyle(self.colorScheme == .dark ? Color.black : Color.white)
                             .frame(width: 90, height: 90)
                     }
                     .padding(.horizontal, 16)
@@ -117,6 +123,18 @@ struct HomeView: View {
     }
 }
 
+//MARK: - FUNCTIONS -
+extension HomeView {
+    
+    //MARK: - NAVIGATE TO ADD EMPLOYEE -
+    private func navigateToAddEmployee() {
+        let viewModel = AddEmployeeView.ViewModel(container: self.viewModel.container)
+        self.router.push(.addEmployee(viewModel))
+    }
+}
+
 #Preview {
-    HomeView()
+    HomeView(
+        viewModel: HomeView.ViewModel(container: DependencyContainer())
+    )
 }

@@ -10,12 +10,15 @@ import SwiftUI
 @main
 struct NextlogApp: App {
     
+    //MARK: - PROPERTIES -
+    
+    //StateObject
     @StateObject var router = Routing()
     
+    //MARK: - LIFE CYCLE -
     var body: some Scene {
         WindowGroup {
-//            SplashView(container: DependencyContainer())
-            EmployeesView()
+            SplashView(container: DependencyContainer())
         }
         .environmentObject(self.router)
     }

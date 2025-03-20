@@ -36,6 +36,7 @@ struct HomeEmployeeListRowView: View {
             Image(systemName: ImageEnum.icChevronRight.rawValue)
         }
         .padding(.horizontal, 4)
+        .contentShape(Rectangle())
     }
 }
 

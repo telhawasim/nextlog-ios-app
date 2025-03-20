@@ -11,6 +11,8 @@ struct AppCustomButton: View {
     
     //MARK: - PROPERTIES -
     
+    //Environment
+    @Environment(\.colorScheme) var colorScheme
     //Normal
     var title: String
     var onPress: (() -> Void)?
@@ -22,9 +24,9 @@ struct AppCustomButton: View {
         }, label: {
             Text(self.title)
                 .font(.getSemibold(.h18))
-                .foregroundStyle(Color.white)
+                .foregroundStyle(self.colorScheme == .dark ? Color.black : Color.white)
                 .frame(maxWidth: .infinity, minHeight: 55, maxHeight: 55, alignment: .center)
-                .background(Color.black)
+                .background(self.colorScheme == .dark ? Color.white : Color.black)
                 .clipShape(Capsule())
         })
     }

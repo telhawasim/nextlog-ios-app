@@ -34,6 +34,12 @@ struct SplashView: View {
                     switch screen {
                     case .login(let viewModel):
                         LoginView(viewModel: viewModel)
+                    case .tabbar(let viewModel):
+                        TabbarView(viewModel: viewModel)
+                    case .employeeDetails:
+                        EmployeeDetailView()
+                    case .addEmployee(let viewModel):
+                        AddEmployeeView(viewModel: viewModel)
                     }
                 }
                 .navigationBarBackButtonHidden(true)
@@ -42,7 +48,11 @@ struct SplashView: View {
         .onAppear {
             DispatchQueue.main.asyncAfter(deadline: .now() + 2.0) {
                 self.isShowSplash = false
-                self.navigateToLogin()
+                if let _ = AppStorage.user {
+                    self.navigateToTabbar()
+                } else {
+                    self.navigateToLogin()
+                }
             }
         }
     }
@@ -55,6 +65,12 @@ extension SplashView {
     private func navigateToLogin() {
         let viewModel = LoginView.ViewModel(container: self.container)
         self.router.push(.login(viewModel))
+    }
+    
+    //MARK: - NAVIGATE TO TABBAR -
+    private func navigateToTabbar() {
+        let viewModel = TabbarView.ViewModel(container: self.container)
+        self.router.push(.tabbar(viewModel))
     }
 }
 

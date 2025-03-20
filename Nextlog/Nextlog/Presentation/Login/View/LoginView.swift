@@ -11,6 +11,10 @@ struct LoginView: View {
     
     //MARK: - PROPERTIES -
     
+    //Environment
+    @Environment(\.colorScheme) var colorScheme
+    //EnvironmentObject
+    @EnvironmentObject var router: Routing
     //StateObject
     @StateObject var viewModel: LoginView.ViewModel
     
@@ -23,7 +27,7 @@ struct LoginView: View {
                 .resizable()
                 .aspectRatio(contentMode: .fit)
                 .frame(width: 90, height: 90)
-                .foregroundStyle(Color.black)
+                .foregroundStyle(self.colorScheme == .dark ? Color.white : Color.black)
             // Title and Description
             VStack(alignment: .leading, spacing: 8) {
                 Text("Login")
@@ -82,7 +86,7 @@ struct LoginView: View {
         // In case login is successfully
         .onChange(of: self.viewModel.isLoginSuccessfully) { (oldValue, newValue) in
             if (newValue) {
-                
+                self.navigateToTabbarScreen()
             }
         }
     }
@@ -98,6 +102,12 @@ extension LoginView {
         } else {
             return "Continue as Admin"
         }
+    }
+    
+    //MARK: - NAVIGATE TO TABBAR SCREEN -
+    private func navigateToTabbarScreen() {
+        let viewModel = TabbarView.ViewModel(container: self.viewModel.container)
+        self.router.push(.tabbar(viewModel))
     }
 }
 

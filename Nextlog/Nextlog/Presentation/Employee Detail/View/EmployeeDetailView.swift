@@ -11,6 +11,8 @@ struct EmployeeDetailView: View {
     
     //MARK: - PROPERTIES -
     
+    @EnvironmentObject var router: Routing
+    
     //MARK: - VIEWS -
     var body: some View {
         // Parent View
@@ -31,7 +33,7 @@ struct EmployeeDetailView: View {
                             EmployeeDetailButtonView(
                                 image: ImageEnum.icLeftArrow.rawValue,
                                 onPress: {
-                                    
+                                    self.router.pop()
                                 }
                             )
                             // Spacer
