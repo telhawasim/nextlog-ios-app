@@ -21,4 +21,7 @@ enum ImageEnum: String {
     case icCamera = "ic_camera"
     case icChevronDown = "chevron.down"
     case icCalendar = "ic_calendar"
+    case icGradient = "ic_gradient"
+    case icLeftArrow = "ic_left_arrow"
+    case icResume = "ic_resume"
 }

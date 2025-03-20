@@ -93,6 +93,7 @@ struct AddEmployeeView: View {
                     )
                 }
                 .padding(.top, 20)
+                // Add Button
                 AppCustomButton(
                     title: "Add",
                     onPress: {

@@ -14,7 +14,8 @@ struct NextlogApp: App {
     
     var body: some Scene {
         WindowGroup {
-            SplashView(container: DependencyContainer())
+//            SplashView(container: DependencyContainer())
+            EmployeesView()
         }
         .environmentObject(self.router)
     }
