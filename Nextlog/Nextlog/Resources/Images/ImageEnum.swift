@@ -24,4 +24,5 @@ enum ImageEnum: String {
     case icGradient = "ic_gradient"
     case icLeftArrow = "ic_left_arrow"
     case icResume = "ic_resume"
+    case icUserPlaceholder = "ic_user_placeholder"
 }

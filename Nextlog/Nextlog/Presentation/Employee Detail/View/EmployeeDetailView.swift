@@ -11,7 +11,10 @@ struct EmployeeDetailView: View {
     
     //MARK: - PROPERTIES -
     
+    //EnvironmentObject
     @EnvironmentObject var router: Routing
+    //StateObject
+    @StateObject var viewModel: EmployeeDetailView.ViewModel
     
     //MARK: - VIEWS -
     var body: some View {
@@ -94,5 +97,7 @@ struct EmployeeDetailView: View {
 }
 
 #Preview {
-    EmployeeDetailView()
+    EmployeeDetailView(
+        viewModel: EmployeeDetailView.ViewModel(container: DependencyContainer(), employeeID: "")
+    )
 }

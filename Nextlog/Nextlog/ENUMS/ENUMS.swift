@@ -10,7 +10,7 @@ import Foundation
 enum ScreenType: Hashable {
     case login(LoginView.ViewModel)
     case tabbar(TabbarView.ViewModel)
-    case employeeDetails
+    case employeeDetails(EmployeeDetailView.ViewModel)
     case addEmployee(AddEmployeeView.ViewModel)
 }
 

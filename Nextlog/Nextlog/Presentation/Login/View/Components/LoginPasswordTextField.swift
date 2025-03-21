@@ -11,6 +11,8 @@ struct LoginPasswordTextField: View {
     
     //MARK: - PROPERTIES -
     
+    //Environment
+    @Environment(\.colorScheme) var colorScheme
     //State
     @State private var isShowPassword: Bool = false
     //Binding
@@ -51,6 +53,7 @@ struct LoginPasswordTextField: View {
                     Image(self.isShowPassword ? ImageEnum.icShowPassword.rawValue : ImageEnum.icHidePassword.rawValue)
                         .resizable()
                         .aspectRatio(contentMode: .fit)
+                        .foregroundStyle(self.colorScheme == .dark ? Color.white : Color.black)
                         .frame(width: 24, height: 24)
                 })
             }

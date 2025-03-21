@@ -65,9 +65,12 @@ struct EmployeesView: View {
                 // Listing
                 LazyVStack(spacing: 20) {
                     ForEach(0...10, id: \.self) { index in
-                        HomeEmployeeListRowView()
+                        HomeEmployeeListRowView(
+                            employee: EmployeeListRowResponse()
+                        )
                             .onTapGesture {
-                                self.router.push(.employeeDetails)
+                                self.navigateToEmployeeDetails()
+//                                self.router.push(.employeeDetails)
                             }
                     }
                 }
@@ -76,6 +79,14 @@ struct EmployeesView: View {
             .padding(.top, 10)
             .padding(.horizontal, 16)
         }
+    }
+}
+
+extension EmployeesView {
+    
+    //MARK: - NAVIGATE TO EMPLOYEE DETAILS -
+    private func navigateToEmployeeDetails() {
+//        let viewModel = EmployeeDetailView.ViewModel(container: self.)
     }
 }
 

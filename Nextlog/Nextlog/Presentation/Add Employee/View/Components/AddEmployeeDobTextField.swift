@@ -11,8 +11,11 @@ struct AddEmployeeDobTextField: View {
     
     //MARK: - PROPERTIES -
     
-    @Binding var value: String
+    //Binding
+    @Binding var selectedValue: String
+    //Normal
     var isDOB: Bool = true
+    var onPress: (() -> Void)?
     
     //MARK: - VIEWS -
     var body: some View {
@@ -27,28 +30,33 @@ struct AddEmployeeDobTextField: View {
                 Text("*")
                     .foregroundStyle(Color.red)
             }
-            // Text and Logo
-            HStack {
-                // Text
-                Text(self.value == "" ? (self.isDOB ? "Select date of birth" : "Select date of joining") : self.value)
-                .font(.getRegular(.h16))
-                .foregroundStyle(self.value == "" ? Color.gray.opacity(0.5) : Color.black)
-                // Spacer
-                Spacer()
-                // Logo
-                ZStack {
-                    // Background
-                    Circle()
-                        .frame(width: 24)
-                        .foregroundStyle(Color.color808080)
-                    // Image
-                    Image(ImageEnum.icCalendar.rawValue)
-                        .resizable()
-                        .aspectRatio(contentMode: .fit)
-                        .frame(width: 12, height: 12)
-                        .foregroundStyle(Color.white)
+            // Date Picker Button
+            Button(action: {
+                self.onPress?()
+            }, label: {
+                // Text and Logo
+                HStack {
+                    // Text
+                    Text(self.selectedValue == "" ? (self.isDOB ? "Select date of birth" : "Select date of joining") : self.selectedValue)
+                    .font(.getRegular(.h16))
+                    .foregroundStyle(self.selectedValue == "" ? Color.gray.opacity(0.5) : Color.black)
+                    // Spacer
+                    Spacer()
+                    // Logo
+                    ZStack {
+                        // Background
+                        Circle()
+                            .frame(width: 24)
+                            .foregroundStyle(Color.color808080)
+                        // Image
+                        Image(ImageEnum.icCalendar.rawValue)
+                            .resizable()
+                            .aspectRatio(contentMode: .fit)
+                            .frame(width: 12, height: 12)
+                            .foregroundStyle(Color.white)
+                    }
                 }
-            }
+            })
             // Divider
             Divider()
         }
@@ -57,6 +65,6 @@ struct AddEmployeeDobTextField: View {
 
 #Preview {
     AddEmployeeDobTextField(
-        value: Binding.constant("")
+        selectedValue: Binding.constant("")
     )
 }

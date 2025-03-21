@@ -60,8 +60,14 @@ struct LoginView: View {
                     onPress: {
                         if (self.viewModel.isAdmin) {
                             if (self.viewModel.validationForLoginAsAdmin()) {
-                                self.viewModel.loginAsAdmin()
+                                self.viewModel.loginAsAdmin { isSuccess in
+                                    if (isSuccess) {
+                                        self.navigateToTabbarScreen()
+                                    }
+                                }
                             }
+                        } else {
+                            
                         }
                     }
                 )
@@ -82,12 +88,6 @@ struct LoginView: View {
         .animation(.default, value: self.viewModel.isAdmin)
         .alert(isPresented: self.$viewModel.isShowErrorAlert) {
             Alert(title: Text("Error"), message: Text(self.viewModel.errorMessage))
-        }
-        // In case login is successfully
-        .onChange(of: self.viewModel.isLoginSuccessfully) { (oldValue, newValue) in
-            if (newValue) {
-                self.navigateToTabbarScreen()
-            }
         }
     }
 }

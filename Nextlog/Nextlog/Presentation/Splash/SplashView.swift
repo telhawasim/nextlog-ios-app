@@ -36,8 +36,8 @@ struct SplashView: View {
                         LoginView(viewModel: viewModel)
                     case .tabbar(let viewModel):
                         TabbarView(viewModel: viewModel)
-                    case .employeeDetails:
-                        EmployeeDetailView()
+                    case .employeeDetails(let viewModel):
+                        EmployeeDetailView(viewModel: viewModel)
                     case .addEmployee(let viewModel):
                         AddEmployeeView(viewModel: viewModel)
                     }

@@ -1,13 +1,13 @@
 //
-//  HomeViewModel.swift
+//  EmployeeDetailViewModel.swift
 //  Nextlog
 //
-//  Created by Telha Wasim on 20/03/2025.
+//  Created by Telha Wasim on 21/03/2025.
 //
 
 import Combine
 
-extension HomeView {
+extension EmployeeDetailView {
     
     //MARK: - VIEW MODEL -
     class ViewModel: BaseViewModel {
@@ -16,34 +16,33 @@ extension HomeView {
         
         //Normal
         let container: DependencyContainer
+        let employeeID: String
         private var cancellables = Set<AnyCancellable>()
-        //Published
-        @Published var page: Int? = 1
-        @Published var limit: Int? = 9
-        @Published var model: GetAllEmployeeResponse?
         
-        //MARK: - INITIALIZER -
-        init(container: DependencyContainer) {
+        @Published var model: GetEmployeeDetailResponse?
+        
+        //MARK: - INITIALZER -
+        init(container: DependencyContainer, employeeID: String) {
             self.container = container
+            self.employeeID = employeeID
             super.init()
-            self.getAllEmployees()
+            self.fetchEmployeeDetails()
         }
     }
 }
 
 //MARK: - FUNCTIONS -
-extension HomeView.ViewModel {
+extension EmployeeDetailView.ViewModel {
     
-    //MARK: - GET ALL EMPLOYEES -
-    private func getAllEmployees() {
+    //MARK: - FETCH EMPLOYEE DETAILS -
+    func fetchEmployeeDetails() {
         self.container
             .userService
-            .getAllEmployees(page: self.page, limit: self.limit)
+            .getEmployeeDetail(id: self.employeeID)
             .sink { result in
                 switch result {
                 case .failure(let error):
-                    print(error.localizedDescription)
-                    break
+                    print(error)
                 case .finished:
                     break
                 }

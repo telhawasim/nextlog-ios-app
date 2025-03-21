@@ -25,7 +25,6 @@ extension LoginView {
         @Published var id: String = ""
         @Published var errorMessage: String = ""
         @Published var isShowErrorAlert: Bool = false
-        @Published var isLoginSuccessfully: Bool = false
         
         //MARK: - INITIALIZER -
         init(container: DependencyContainer) {
@@ -38,7 +37,7 @@ extension LoginView {
 extension LoginView.ViewModel {
     
     //MARK: - LOGIN AS ADMIN -
-    func loginAsAdmin() {
+    func loginAsAdmin(completion: @escaping ((Bool) -> Void)) {
         self.container
             .userService
             .loginAsAdmin(email: self.email, password: self.password)
@@ -47,6 +46,7 @@ extension LoginView.ViewModel {
                 case .failure(let error):
                     print(error.errorDescription ?? "")
                     print(error.errorStatus ?? 0)
+                    completion(false)
                 case .finished:
                     break
                 }
@@ -56,7 +56,7 @@ extension LoginView.ViewModel {
                 AppStorage.user = response?.data
                 AppStorage.accessToken = response?.accessToken
                 
-                self.isLoginSuccessfully = true
+                completion(true)
             }
             .store(in: &self.cancellables)
     }
