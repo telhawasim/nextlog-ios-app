@@ -23,7 +23,7 @@ struct TabbarView: View {
         ZStack(alignment: .bottom) {
             switch self.selectedTab {
             case .home:
-                HomeView(viewModel: HomeView.ViewModel(container: self.viewModel.container))
+                HomeView(viewModel: HomeView.ViewModel())
             case .employees:
                 EmployeesView()
             case .logout:
@@ -52,12 +52,12 @@ extension TabbarView {
         AppStorage.user = nil
         
         self.router.reset()
-        self.router.push(.login(LoginView.ViewModel(container: DependencyContainer())))
+        self.router.push(.login(LoginView.ViewModel()))
     }
 }
 
 #Preview {
     TabbarView(
-        viewModel: TabbarView.ViewModel(container: DependencyContainer())
+        viewModel: TabbarView.ViewModel()
     )
 }

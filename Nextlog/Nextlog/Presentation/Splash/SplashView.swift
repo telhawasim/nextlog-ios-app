@@ -15,8 +15,6 @@ struct SplashView: View {
     @EnvironmentObject var router: Routing
     //State
     @State private var isShowSplash: Bool = true
-    //Normal
-    var container: DependencyContainer
     
     //MARK: - VIEWS -
     var body: some View {
@@ -63,20 +61,18 @@ extension SplashView {
     
     //MARK: - NAVIGATE TO LOGIN -
     private func navigateToLogin() {
-        let viewModel = LoginView.ViewModel(container: self.container)
+        let viewModel = LoginView.ViewModel()
         self.router.push(.login(viewModel))
     }
     
     //MARK: - NAVIGATE TO TABBAR -
     private func navigateToTabbar() {
-        let viewModel = TabbarView.ViewModel(container: self.container)
+        let viewModel = TabbarView.ViewModel()
         self.router.push(.tabbar(viewModel))
     }
 }
 
 #Preview {
-    SplashView(
-        container: DependencyContainer()
-    )
+    SplashView()
         .environmentObject(Routing())
 }

@@ -7,6 +7,7 @@
 
 import Foundation
 import Combine
+import Alamofire
 
 extension LoginView {
     
@@ -16,7 +17,6 @@ extension LoginView {
         //MARK: - PROPERTIES -
         
         //Normal
-        let container: DependencyContainer
         private var cancellables = Set<AnyCancellable>()
         //Published
         @Published var isAdmin: Bool = true
@@ -27,9 +27,6 @@ extension LoginView {
         @Published var isShowErrorAlert: Bool = false
         
         //MARK: - INITIALIZER -
-        init(container: DependencyContainer) {
-            self.container = container
-        }
     }
 }
 
@@ -38,24 +35,18 @@ extension LoginView.ViewModel {
     
     //MARK: - LOGIN AS ADMIN -
     func loginAsAdmin(completion: @escaping ((Bool) -> Void)) {
-        self.container
-            .userService
-            .loginAsAdmin(email: self.email, password: self.password)
+        NetworkManager.shared.request(endPoint: APIEndpoint.login(email: self.email, password: self.password, role: "admin"), responseType: LoginResponseModel.self)
             .sink { result in
                 switch result {
                 case .failure(let error):
-                    print(error.errorDescription ?? "")
-                    print(error.errorStatus ?? 0)
+                    self.handleErrorMessage(error.localizedDescription)
                     completion(false)
                 case .finished:
                     break
                 }
-            } receiveValue: { [weak self] response in
-                guard let self = self else { return }
-                
-                AppStorage.user = response?.data
-                AppStorage.accessToken = response?.accessToken
-                
+            } receiveValue: { response in
+                AppStorage.user = response.data
+                AppStorage.accessToken = response.accessToken
                 completion(true)
             }
             .store(in: &self.cancellables)

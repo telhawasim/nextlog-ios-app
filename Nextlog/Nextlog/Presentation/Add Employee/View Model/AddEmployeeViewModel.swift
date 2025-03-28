@@ -15,8 +15,6 @@ extension AddEmployeeView {
         
         //MARK: - PROPERTIES -
         
-        //Normal
-        let container: DependencyContainer
         //Published
         @Published var isShowActionSheet: Bool = false
         @Published var isShowingImagePicker: Bool = false
@@ -24,11 +22,6 @@ extension AddEmployeeView {
         @Published var sourceType: UIImagePickerController.SourceType = .camera
         @Published var isShowDOBDatePicker: Bool = false
         @Published var isShowDateOfJoiningPicker: Bool = false
-        
-        //MARK: - INITIALIZER -
-        init(container: DependencyContainer) {
-            self.container = container
-        }
     }
 }
 

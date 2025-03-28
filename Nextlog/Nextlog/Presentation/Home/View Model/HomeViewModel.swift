@@ -15,7 +15,6 @@ extension HomeView {
         //MARK: - PROPERTIES -
         
         //Normal
-        let container: DependencyContainer
         private var cancellables = Set<AnyCancellable>()
         //Published
         @Published var page: Int? = 1
@@ -23,8 +22,7 @@ extension HomeView {
         @Published var model: GetAllEmployeeResponse?
         
         //MARK: - INITIALIZER -
-        init(container: DependencyContainer) {
-            self.container = container
+        override init() {
             super.init()
             self.getAllEmployees()
         }
@@ -36,14 +34,11 @@ extension HomeView.ViewModel {
     
     //MARK: - GET ALL EMPLOYEES -
     private func getAllEmployees() {
-        self.container
-            .userService
-            .getAllEmployees(page: self.page, limit: self.limit)
+        NetworkManager.shared.request(endPoint: APIEndpoint.getEmployees(page: 1, limit: 5), responseType: GetAllEmployeeResponse.self)
             .sink { result in
                 switch result {
                 case .failure(let error):
-                    print(error.localizedDescription)
-                    break
+                    print(error)
                 case .finished:
                     break
                 }

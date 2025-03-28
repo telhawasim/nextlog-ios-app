@@ -14,7 +14,7 @@ struct EmployeeDetailView: View {
     //EnvironmentObject
     @EnvironmentObject var router: Routing
     //StateObject
-    @StateObject var viewModel: EmployeeDetailView.ViewModel
+    @StateObject var viewModel = EmployeeDetailView.ViewModel()
     
     //MARK: - VIEWS -
     var body: some View {
@@ -97,7 +97,5 @@ struct EmployeeDetailView: View {
 }
 
 #Preview {
-    EmployeeDetailView(
-        viewModel: EmployeeDetailView.ViewModel(container: DependencyContainer(), employeeID: "")
-    )
+    EmployeeDetailView()
 }

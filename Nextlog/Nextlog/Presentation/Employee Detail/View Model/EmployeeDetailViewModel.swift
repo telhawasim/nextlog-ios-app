@@ -15,16 +15,12 @@ extension EmployeeDetailView {
         //MARK: - PROPERTIES -
         
         //Normal
-        let container: DependencyContainer
-        let employeeID: String
         private var cancellables = Set<AnyCancellable>()
         
         @Published var model: GetEmployeeDetailResponse?
         
         //MARK: - INITIALZER -
-        init(container: DependencyContainer, employeeID: String) {
-            self.container = container
-            self.employeeID = employeeID
+        override init() {
             super.init()
             self.fetchEmployeeDetails()
         }
@@ -36,19 +32,19 @@ extension EmployeeDetailView.ViewModel {
     
     //MARK: - FETCH EMPLOYEE DETAILS -
     func fetchEmployeeDetails() {
-        self.container
-            .userService
-            .getEmployeeDetail(id: self.employeeID)
-            .sink { result in
-                switch result {
-                case .failure(let error):
-                    print(error)
-                case .finished:
-                    break
-                }
-            } receiveValue: { response in
-                self.model = response
-            }
-            .store(in: &self.cancellables)
+//        self.container
+//            .userService
+//            .getEmployeeDetail(id: self.employeeID)
+//            .sink { result in
+//                switch result {
+//                case .failure(let error):
+//                    print(error)
+//                case .finished:
+//                    break
+//                }
+//            } receiveValue: { response in
+//                self.model = response
+//            }
+//            .store(in: &self.cancellables)
     }
 }

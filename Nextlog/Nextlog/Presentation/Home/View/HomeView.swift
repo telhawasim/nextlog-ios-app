@@ -63,7 +63,7 @@ struct HomeView: View {
                         // Total Employees and Title
                         VStack(alignment: .leading) {
                             // Total Employee
-                            Text("\(self.viewModel.model?.total ?? 0)")
+                            Text("\(self.viewModel.model?.total_count ?? 0)")
                                 .foregroundStyle(self.colorScheme == .dark ? Color.black : Color.white)
                                 .font(.getBold(.h40))
                             // Title
@@ -153,22 +153,19 @@ extension HomeView {
     
     //MARK: - NAVIGATE TO ADD EMPLOYEE -
     private func navigateToAddEmployee() {
-        let viewModel = AddEmployeeView.ViewModel(container: self.viewModel.container)
+        let viewModel = AddEmployeeView.ViewModel()
         self.router.push(.addEmployee(viewModel))
     }
     
     //MARK: - NAVIGATE TO EMPLOYEE DETAILS -
     private func navigateToEmployeeDetails(id: String) {
-        let viewModel = EmployeeDetailView.ViewModel(
-            container: self.viewModel.container,
-            employeeID: id
-        )
+        let viewModel = EmployeeDetailView.ViewModel()
         self.router.push(.employeeDetails(viewModel))
     }
 }
 
 #Preview {
     HomeView(
-        viewModel: HomeView.ViewModel(container: DependencyContainer())
+        viewModel: HomeView.ViewModel()
     )
 }

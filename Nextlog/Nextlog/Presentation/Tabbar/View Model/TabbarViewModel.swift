@@ -10,14 +10,5 @@ extension TabbarView {
     //MARK: - VIEW MODEL -
     class ViewModel: BaseViewModel {
         
-        //MARK: - PROPERTIES -
-        
-        //Normal
-        let container: DependencyContainer
-        
-        //MARK: - INITIALIZER -
-        init(container: DependencyContainer) {
-            self.container = container
-        }
     }
 }

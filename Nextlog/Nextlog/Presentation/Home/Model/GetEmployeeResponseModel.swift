@@ -9,12 +9,12 @@ import Foundation
 
 //MARK: - GetAllEmployeeResponse -
 struct GetAllEmployeeResponse: Codable {
-    var message: String
-    var status: Int
+    var message: String?
+    var status: Int?
     var employees: [EmployeeListRowResponse]?
     var current_page: Int?
-    var per_page: Int?
-    var total: Int?
+    var limit: Int?
+    var total_count: Int?
     var total_pages: Int?
 }
 
@@ -31,7 +31,7 @@ struct EmployeeListRowResponse: Codable {
     var name: String?
     var designation: DesignationModel?
     var email: String?
-    var avatar: String?
+//    var avatar: String?
 }
 
 //MARK: - EmployeeResponse -

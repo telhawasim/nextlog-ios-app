@@ -106,13 +106,13 @@ extension LoginView {
     
     //MARK: - NAVIGATE TO TABBAR SCREEN -
     private func navigateToTabbarScreen() {
-        let viewModel = TabbarView.ViewModel(container: self.viewModel.container)
+        let viewModel = TabbarView.ViewModel()
         self.router.push(.tabbar(viewModel))
     }
 }
 
 #Preview {
     LoginView(
-        viewModel: LoginView.ViewModel(container: DependencyContainer())
+        viewModel: LoginView.ViewModel()
     )
 }

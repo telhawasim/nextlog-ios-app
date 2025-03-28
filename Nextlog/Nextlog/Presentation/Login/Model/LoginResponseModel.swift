@@ -9,10 +9,8 @@ import Foundation
 
 //MARK: - LoginResponseModel -
 struct LoginResponseModel: BaseServerModel {
-    var error: Bool?
-    var reason: String?
-    var message: String
-    var status: Int
+    var message: String?
+    var status: Int?
     var data: LoginUserResponse?
     var accessToken: String?
     
