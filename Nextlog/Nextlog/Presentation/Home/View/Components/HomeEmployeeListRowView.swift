@@ -54,13 +54,13 @@ struct HomeEmployeeListRowView: View {
         .padding(.horizontal, 4)
         .contentShape(Rectangle())
         .task {
-//            Utilities.shared.fetchImage(from: self.employee.avatar ?? "") { image in
-//                if let userImage = image {
-//                    self.userImage = userImage
-//                } else {
-//                    self.userImage = UIImage(named: ImageEnum.icUserPlaceholder.rawValue)
-//                }
-//            }
+            Utilities.shared.fetchImage(from: self.employee.avatar ?? "") { image in
+                if let userImage = image {
+                    self.userImage = userImage
+                } else {
+                    self.userImage = UIImage(named: ImageEnum.icUserPlaceholder.rawValue)
+                }
+            }
         }
     }
 }

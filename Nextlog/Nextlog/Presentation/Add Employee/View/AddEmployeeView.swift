@@ -108,7 +108,10 @@ struct AddEmployeeView: View {
                         // Date of Joining Textfield
                         AddEmployeeDobTextField(
                             selectedValue: self.$selectedDateOfJoining,
-                            isDOB: false
+                            isDOB: false,
+                            onPress: {
+                                self.viewModel.isShowDateOfJoiningPicker.toggle()
+                            }
                         )
                     }
                     .padding(.top, 20)

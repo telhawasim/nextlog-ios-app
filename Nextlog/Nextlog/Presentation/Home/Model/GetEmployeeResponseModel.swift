@@ -31,7 +31,7 @@ struct EmployeeListRowResponse: Codable {
     var name: String?
     var designation: DesignationModel?
     var email: String?
-//    var avatar: String?
+    var avatar: String?
 }
 
 //MARK: - EmployeeResponse -
