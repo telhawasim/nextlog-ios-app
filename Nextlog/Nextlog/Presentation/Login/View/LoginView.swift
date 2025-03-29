@@ -67,7 +67,13 @@ struct LoginView: View {
                                 }
                             }
                         } else {
-                            
+                            if (self.viewModel.validationForEmployeeLogin()) {
+                                self.viewModel.loginAsEmployee { isSuccess in
+                                    if (isSuccess) {
+                                        self.navigateToTabbarScreen()
+                                    }
+                                }
+                            }
                         }
                     }
                 )

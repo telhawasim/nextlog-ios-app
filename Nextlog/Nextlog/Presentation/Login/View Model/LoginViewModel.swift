@@ -52,6 +52,25 @@ extension LoginView.ViewModel {
             .store(in: &self.cancellables)
     }
     
+    //MARK: - LOGIN AS EMPLOYEE -
+    func loginAsEmployee(completion: @escaping ((Bool) -> Void)) {
+        NetworkManager.shared.request(endPoint: APIEndpoint.login(email: self.email, emp_id: Int(self.id), role: "employee"), responseType: LoginResponseModel.self)
+            .sink { result in
+                switch result {
+                case .failure(let error):
+                    self.handleErrorMessage(error.localizedDescription)
+                    completion(false)
+                case .finished:
+                    break
+                }
+            } receiveValue: { response in
+                AppStorage.user = response.data
+                AppStorage.accessToken = response.accessToken
+                completion(true)
+            }
+            .store(in: &self.cancellables)
+    }
+    
     //MARK: - VALIDATION FOR LOGIN AS ADMIN -
     func validationForLoginAsAdmin() -> Bool {
         var errorMessage: String?
@@ -62,6 +81,26 @@ extension LoginView.ViewModel {
             errorMessage = "Email must be valid"
         } else if (self.password.isEmpty) {
             errorMessage = "Password cannot be empty"
+        }
+        
+        if let error = errorMessage {
+            self.handleErrorMessage(error)
+            return false
+        } else {
+            return true
+        }
+    }
+    
+    //MARK: - VALIDATE FOR EMPLOYEE LOGIN -
+    func validationForEmployeeLogin() -> Bool {
+        var errorMessage: String?
+        
+        if (self.email.isEmpty) {
+            errorMessage = "Email cannot be empty"
+        } else if !(self.email.isValidEmail()) {
+            errorMessage = "Email must be valid"
+        } else if (self.id.isEmpty) {
+            errorMessage = "ID cannot me empty"
         }
         
         if let error = errorMessage {

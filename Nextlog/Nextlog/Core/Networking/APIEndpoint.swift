@@ -12,7 +12,7 @@ enum APIEndpoint {
     private static let baseURL = "http://127.0.0.1:8000/"
     
     // AUTHENTICATION
-    case login(email: String, password: String, role: String)
+    case login(email: String, password: String? = "", emp_id: Int? = 0, role: String)
     // EMPLOYEE
     case getEmployees(page: Int = 1, limit: Int = 10)
     // DESIGNATION
@@ -59,12 +59,20 @@ enum APIEndpoint {
     //MARK: - PARAMETERS -
     var parameters: Parameters? {
         switch self {
-        case .login(let email, let password, let role):
-            return [
-                "email": email,
-                "password": password,
-                "role": role
-            ]
+        case .login(let email, let password, let emp_id, let role):
+            if role == "admin" {
+                return [
+                    "email": email,
+                    "password": password ?? "",
+                    "role": role
+                ]
+            } else {
+                return [
+                    "email": email,
+                    "emp_id": emp_id ?? 0,
+                    "role": role
+                ]
+            }
         case .getEmployees:
             return nil
         case .getDesignations:

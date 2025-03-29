@@ -17,6 +17,8 @@ struct HomeView: View {
     @EnvironmentObject var router: Routing
     //StateObject
     @StateObject var viewModel: HomeView.ViewModel
+    //Binding
+    @Binding var selectedTab: TabbarType
     //Normal
     var isShowListing: Bool = false
     
@@ -31,12 +33,15 @@ struct HomeView: View {
                     .font(.getBold(FontSize.h20))
                 // Spacer
                 Spacer()
-                // Add Employee Button
-                HomeAddEmployeeButtonView(
-                    onPress: {
-                        self.navigateToAddEmployee()
-                    }
-                )
+                // Check if the logged in user is 'admin'
+                if (AppStorage.user?.role == "admin") {
+                    // Add Employee Button
+                    HomeAddEmployeeButtonView(
+                        onPress: {
+                            self.navigateToAddEmployee()
+                        }
+                    )
+                }
             }
             // Background, Total Employees and Logo
             ZStack {
@@ -93,7 +98,7 @@ struct HomeView: View {
                 Spacer()
                 // View All Button
                 Button(action: {
-                    
+                    self.selectedTab = .employees
                 }, label: {
                     Text("View All")
                         .font(.getMedium(.h16))
@@ -166,6 +171,7 @@ extension HomeView {
 
 #Preview {
     HomeView(
-        viewModel: HomeView.ViewModel()
+        viewModel: HomeView.ViewModel(),
+        selectedTab: Binding.constant(.home)
     )
 }

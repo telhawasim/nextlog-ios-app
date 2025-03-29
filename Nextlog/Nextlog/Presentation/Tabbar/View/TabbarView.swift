@@ -23,7 +23,10 @@ struct TabbarView: View {
         ZStack(alignment: .bottom) {
             switch self.selectedTab {
             case .home:
-                HomeView(viewModel: HomeView.ViewModel())
+                HomeView(
+                    viewModel: HomeView.ViewModel(),
+                    selectedTab: self.$selectedTab
+                )
             case .employees:
                 EmployeesView()
             case .logout:
