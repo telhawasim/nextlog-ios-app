@@ -14,7 +14,9 @@ struct EmployeeDetailView: View {
     //EnvironmentObject
     @EnvironmentObject var router: Routing
     //StateObject
-    @StateObject var viewModel = EmployeeDetailView.ViewModel()
+    @StateObject var viewModel: EmployeeDetailView.ViewModel
+    //State
+    @State var userImage: UIImage?
     
     //MARK: - VIEWS -
     var body: some View {
@@ -24,6 +26,12 @@ struct EmployeeDetailView: View {
             VStack(spacing: 0) {
                 // Image, Background, Information and Buttons
                 ZStack {
+                    // Profile Image
+                    if let userImage = self.userImage {
+                        Image(uiImage: userImage)
+                            .resizable()
+                            .frame(width: proxy.size.width, height: proxy.size.height * 0.4)
+                    }
                     // Background
                     Image(ImageEnum.icGradient.rawValue)
                         .resizable()
@@ -54,15 +62,15 @@ struct EmployeeDetailView: View {
                         // Information
                         VStack(alignment: .leading, spacing: 7) {
                             // Name
-                            Text("Telha Wasim")
+                            Text(self.viewModel.model?.name ?? "")
                                 .font(.getBold(.h20))
                                 .foregroundStyle(Color.white)
                             // Designation
-                            Text("iOS Developer")
+                            Text(self.viewModel.model?.designation?.name ?? "")
                                 .font(.getMedium())
                                 .foregroundStyle(Color.white)
                             // Email
-                            Text(verbatim: "telha.wasim@nxb.com.pk")
+                            Text(verbatim: self.viewModel.model?.email ?? "")
                                 .font(.getRegular())
                                 .foregroundStyle(Color.white)
                         }
@@ -78,14 +86,26 @@ struct EmployeeDetailView: View {
                     Text("Profiles")
                         .font(.getMedium(.h24))
                         .frame(maxWidth: .infinity, alignment: .leading)
-                    ScrollView {
-                        LazyVStack(spacing: 20) {
-                            ForEach(0...2, id: \.self) { index in
-                                EmployeeDetailCVListView()
+                    if let profiles = self.viewModel.model?.profiles {
+                        ScrollView {
+                            LazyVStack(spacing: 20) {
+                                ForEach(profiles, id: \.id) { profile in
+                                    EmployeeDetailCVListView()
+                                }
                             }
+                            .padding(.all, 1)
+                            .padding(.top, 24)
                         }
-                        .padding(.all, 1)
-                        .padding(.top, 24)
+                    } else {
+                        ScrollView {
+                            LazyVStack(spacing: 20) {
+                                ForEach(0...2, id: \.self) { index in
+                                    EmployeeDetailCVListShimmerView()
+                                }
+                            }
+                            .padding(.all, 1)
+                            .padding(.top, 24)
+                        }
                     }
                 }
                 .padding(.horizontal, 16)
@@ -93,9 +113,29 @@ struct EmployeeDetailView: View {
             }
         }
         .ignoresSafeArea(edges: .top)
+        .task {
+            self.fetchEmployeeProfileImage()
+        }
+    }
+}
+
+//MARK: - FUNCTIONS -
+extension EmployeeDetailView {
+    
+//    //MARK: - FETCH EMPLOYEE PROFILE IMAGE -
+    private func fetchEmployeeProfileImage() {
+        Utilities.shared.fetchImage(from: self.viewModel.model?.avatar ?? "") { image in
+            if let userImage = image {
+                self.userImage = userImage
+            } else {
+                self.userImage = UIImage(named: ImageEnum.icUserPlaceholder.rawValue)!
+            }
+        }
     }
 }
 
 #Preview {
-    EmployeeDetailView()
+    EmployeeDetailView(
+        viewModel: EmployeeDetailView.ViewModel(employeeId: "")
+    )
 }

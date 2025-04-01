@@ -34,9 +34,14 @@ final class NetworkManager {
             .validate()
             .publishDecodable(type: responseType)
             .tryMap { response in
-                guard let value = response.value else {
-                    throw NetworkError.decodingError
+                if let data = response.data {
+                    print("Raw Response Data: \(String(data: data, encoding: .utf8) ?? "Invalid Data")")
                 }
+
+                guard let value = response.value else {
+                    throw NSError(domain: "Decoding Error", code: -1005, userInfo: [NSLocalizedDescriptionKey: "Failed to decode response."])
+                }
+                
                 return value
             }
             .mapError { error in

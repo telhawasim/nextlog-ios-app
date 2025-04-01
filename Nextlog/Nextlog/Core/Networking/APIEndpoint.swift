@@ -15,6 +15,7 @@ enum APIEndpoint {
     case login(email: String, password: String? = "", emp_id: Int? = 0, role: String)
     // EMPLOYEE
     case getEmployees(page: Int = 1, limit: Int = 10)
+    case getEmployeeDetails(id: String)
     // DESIGNATION
     case getDesignations
     // DEPARTMENT
@@ -27,6 +28,8 @@ enum APIEndpoint {
             return APIEndpoint.baseURL + "login"
         case .getEmployees:
             return APIEndpoint.baseURL + "employee/all"
+        case .getEmployeeDetails(let id):
+            return APIEndpoint.baseURL + "employee/detail/\(id)"
         case .getDesignations:
             return APIEndpoint.baseURL + "designation/all"
         case .getDepartments:
@@ -40,6 +43,8 @@ enum APIEndpoint {
         case .login:
             return .post
         case .getEmployees:
+            return .get
+        case .getEmployeeDetails:
             return .get
         case .getDesignations:
             return .get
@@ -74,6 +79,8 @@ enum APIEndpoint {
                 ]
             }
         case .getEmployees:
+            return nil
+        case .getEmployeeDetails:
             return nil
         case .getDesignations:
             return nil

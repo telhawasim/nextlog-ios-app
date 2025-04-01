@@ -164,7 +164,7 @@ extension HomeView {
     
     //MARK: - NAVIGATE TO EMPLOYEE DETAILS -
     private func navigateToEmployeeDetails(id: String) {
-        let viewModel = EmployeeDetailView.ViewModel()
+        let viewModel = EmployeeDetailView.ViewModel(employeeId: id)
         self.router.push(.employeeDetails(viewModel))
     }
 }

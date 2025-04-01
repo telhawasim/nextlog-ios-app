@@ -24,7 +24,7 @@ struct HomeEmployeeListRowView: View {
             if let image = self.userImage {
                 Image(uiImage: image)
                     .resizable()
-                    .aspectRatio(contentMode: .fit)
+                    .aspectRatio(contentMode: .fill)
                     .frame(width: 73)
                     .clipShape(Circle())
             } else {

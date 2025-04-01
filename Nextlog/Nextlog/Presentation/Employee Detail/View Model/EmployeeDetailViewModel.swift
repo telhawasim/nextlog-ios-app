@@ -16,13 +16,15 @@ extension EmployeeDetailView {
         
         //Normal
         private var cancellables = Set<AnyCancellable>()
-        
-        @Published var model: GetEmployeeDetailResponse?
+        let employeeId: String
+        //Published
+        @Published var model: EmployeeDetailModel?
         
         //MARK: - INITIALZER -
-        override init() {
+        init(employeeId: String) {
+            self.employeeId = employeeId
             super.init()
-            self.fetchEmployeeDetails()
+            self.fetchEmployeeDetails(id: employeeId)
         }
     }
 }
@@ -31,20 +33,18 @@ extension EmployeeDetailView {
 extension EmployeeDetailView.ViewModel {
     
     //MARK: - FETCH EMPLOYEE DETAILS -
-    func fetchEmployeeDetails() {
-//        self.container
-//            .userService
-//            .getEmployeeDetail(id: self.employeeID)
-//            .sink { result in
-//                switch result {
-//                case .failure(let error):
-//                    print(error)
-//                case .finished:
-//                    break
-//                }
-//            } receiveValue: { response in
-//                self.model = response
-//            }
-//            .store(in: &self.cancellables)
+    func fetchEmployeeDetails(id: String) {
+        NetworkManager.shared.request(endPoint: APIEndpoint.getEmployeeDetails(id: id), responseType: GetEmployeeDetailResponse.self)
+            .sink { result in
+                switch result {
+                case .failure(let error):
+                    print(error.localizedDescription)
+                case .finished:
+                    break
+                }
+            } receiveValue: { response in
+                self.model = response.employee
+            }
+            .store(in: &self.cancellables)
     }
 }
