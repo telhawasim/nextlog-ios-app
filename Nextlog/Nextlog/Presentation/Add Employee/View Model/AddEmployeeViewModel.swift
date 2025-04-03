@@ -31,6 +31,7 @@ extension AddEmployeeView {
         @Published var isShowDepartmentPicker: Bool = false
         @Published var isShowErrorAlert: Bool = false
         @Published var errorMessage: String = ""
+        @Published var isUnauthorized: Bool = false
         //Params (Published)
         @Published var name: String = ""
         @Published var empID: String = ""
@@ -63,12 +64,7 @@ extension AddEmployeeView.ViewModel {
             .sink { result in
                 switch result {
                 case .failure(let error):
-                    switch error {
-                    case .unauthorized(_, _):
-                        self.errorHandling("Login session as expired. Please login again.")
-                    default:
-                        print(error.localizedDescription)
-                    }
+                    self.errorHandling(error)
                 case .finished:
                     break
                 }
@@ -84,12 +80,7 @@ extension AddEmployeeView.ViewModel {
             .sink { result in
                 switch result {
                 case .failure(let error):
-                    switch error {
-                    case .unauthorized(_, _):
-                        self.errorHandling("Login session as expired. Please login again.")
-                    default:
-                        print(error.localizedDescription)
-                    }
+                    self.errorHandling(error)
                 case .finished:
                     break
                 }
@@ -102,7 +93,7 @@ extension AddEmployeeView.ViewModel {
     //MARK: - ADD EMPLOYEE -
     func addEmployee(completion: @escaping (Bool) -> Void) {
         guard let avatar = self.selectedImage else {
-            self.errorHandling("Profile image is required")
+            self.showErrorAlert("Profile image is required")
             return
         }
         
@@ -181,7 +172,7 @@ extension AddEmployeeView.ViewModel {
         }
         
         if let error = errorMessage {
-            self.errorHandling(error)
+            self.showErrorAlert(error)
             return false
         } else {
             return true
@@ -189,7 +180,24 @@ extension AddEmployeeView.ViewModel {
     }
     
     //MARK: - ERROR HANDLING -
-    private func errorHandling(_ message: String) {
+    private func errorHandling(_ error: NetworkError) {
+        let message: String
+        
+        switch error {
+        case .unauthorized(_, _):
+            self.isUnauthorized = true
+            message = "Login session as expired. Please login again."
+        case .serverError(_, let msg):
+            message = msg
+        default:
+            message = "Something went wrong"
+        }
+        
+        self.showErrorAlert(message)
+    }
+    
+    //MARK: - ERROR HANDLING -
+    private func showErrorAlert(_ message: String) {
         self.errorMessage = message
         self.isShowErrorAlert = true
     }

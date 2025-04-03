@@ -10,4 +10,5 @@ import Foundation
 extension Notification.Name {
     
     static let employeeDidAdded = Notification.Name("employeeDidAdded")
+    static let employeeDidDelete = Notification.Name("employeeDidDelete")
 }

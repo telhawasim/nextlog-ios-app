@@ -26,4 +26,6 @@ enum ImageEnum: String {
     case icResume = "ic_resume"
     case icUserPlaceholder = "ic_user_placeholder"
     case icDelete = "ic_delete"
+    case icProfileName = "ic_profile_name"
+    case icConfirmation = "ic_confirmation"
 }

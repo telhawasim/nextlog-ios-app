@@ -193,7 +193,10 @@ struct AddEmployeeView: View {
                 title: Text("Error"),
                 message: Text(self.viewModel.errorMessage),
                 dismissButton: .default(Text("OK"), action: {
-                    Utilities.shared.removeTheUser(router: self.router)
+                    if (self.viewModel.isUnauthorized) {
+                        self.viewModel.isUnauthorized = false
+                        Utilities.shared.removeTheUser(router: self.router)
+                    }
                 })
             )
         }

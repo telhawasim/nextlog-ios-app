@@ -22,6 +22,8 @@ enum APIEndpoint {
     case getDesignations
     // DEPARTMENT
     case getDepartments
+    // PROFILE
+    case addProfile(id: Int, name: String)
     
     //MARK: - URL -
     var url: String {
@@ -40,6 +42,8 @@ enum APIEndpoint {
             return APIEndpoint.baseURL + "designation/all"
         case .getDepartments:
             return APIEndpoint.baseURL + "department/all"
+        case .addProfile:
+            return APIEndpoint.baseURL + "profile/add"
         }
     }
     
@@ -60,6 +64,8 @@ enum APIEndpoint {
             return .get
         case .getDepartments:
             return .get
+        case .addProfile:
+            return .post
         }
     }
     
@@ -108,6 +114,11 @@ enum APIEndpoint {
             return nil
         case .getDepartments:
             return nil
+        case .addProfile(let id, let name):
+            return [
+                "id": id,
+                "name": name
+            ]
         }
     }
 }

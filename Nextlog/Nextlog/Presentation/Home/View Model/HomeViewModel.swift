@@ -20,6 +20,9 @@ extension HomeView {
         @Published var page: Int? = 1
         @Published var limit: Int? = 9
         @Published var model: GetAllEmployeeResponse?
+        @Published var isShowErrorAlert: Bool = false
+        @Published var errorMessage: String = ""
+        @Published var isUnauthorized: Bool = false
         
         //MARK: - INITIALIZER -
         override init() {
@@ -38,7 +41,7 @@ extension HomeView.ViewModel {
             .sink { result in
                 switch result {
                 case .failure(let error):
-                    print(error)
+                    self.handleError(error)
                 case .finished:
                     break
                 }
@@ -46,5 +49,28 @@ extension HomeView.ViewModel {
                 self.model = response
             }
             .store(in: &self.cancellables)
+    }
+    
+    //MARK: - HANDLE ERROR -
+    private func handleError(_ error: NetworkError) {
+        let message: String
+        
+        switch error {
+        case .unauthorized(_, _):
+            self.isUnauthorized = true
+            message = "Login session as expired. Please login again."
+        case .serverError(_, let msg):
+            message = msg
+        default:
+            message = "Something went wrong"
+        }
+        
+        self.showErrorAlert(message)
+    }
+    
+    //MARK: - SHOW ERROR ALERT -
+    private func showErrorAlert(_ message: String) {
+        self.errorMessage = message
+        self.isShowErrorAlert = true
     }
 }

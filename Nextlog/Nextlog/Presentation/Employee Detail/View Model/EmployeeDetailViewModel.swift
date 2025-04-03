@@ -5,6 +5,7 @@
 //  Created by Telha Wasim on 21/03/2025.
 //
 
+import Foundation
 import Combine
 
 extension EmployeeDetailView {
@@ -18,7 +19,14 @@ extension EmployeeDetailView {
         private var cancellables = Set<AnyCancellable>()
         let employeeId: String
         //Published
+        @Published var profileName: String = ""
         @Published var model: EmployeeDetailModel?
+        @Published var isShowProfilePopup: Bool = false
+        @Published var isShowDeleteProfilePopup: Bool = false
+        @Published var isLoading: Bool = false
+        @Published var isShowErrorAlert: Bool = false
+        @Published var errorMessage: String = ""
+        @Published var isUnauthorized: Bool = false
         
         //MARK: - INITIALZER -
         init(employeeId: String) {
@@ -34,15 +42,21 @@ extension EmployeeDetailView.ViewModel {
     
     //MARK: - FETCH EMPLOYEE DETAILS -
     func fetchEmployeeDetails(id: String) {
+        self.isLoading = true
+        
         NetworkManager.shared.request(endPoint: APIEndpoint.getEmployeeDetails(id: id), responseType: GetEmployeeDetailResponse.self)
             .sink { result in
+                self.isLoading = false
+                
                 switch result {
                 case .failure(let error):
-                    print(error.localizedDescription)
+                    self.handleError(error)
                 case .finished:
                     break
                 }
             } receiveValue: { response in
+                self.isLoading = false
+                
                 self.model = response.employee
             }
             .store(in: &self.cancellables)
@@ -50,18 +64,48 @@ extension EmployeeDetailView.ViewModel {
     
     //MARK: - DELETE EMPLOYEE API -
     func deleteEmployeeAPI(completion: @escaping (Bool) -> Void) {
+        self.isLoading = true
+        
         NetworkManager.shared.request(endPoint: APIEndpoint.deleteEmployee(id: self.employeeId), responseType: DeleteEmployeeResponseModel.self)
             .sink { result in
+                self.isLoading = false
+                
                 switch result {
                 case .failure(let error):
-                    print(error.localizedDescription)
+                    self.handleError(error)
                     completion(false)
                 case .finished:
                     break
                 }
             } receiveValue: { _ in
+                self.isLoading = false
+                
+                NotificationCenter.default.post(name: .employeeDidDelete, object: nil)
                 completion(true)
             }
             .store(in: &self.cancellables)
+    }
+    
+    //MARK: - HANDLE ERROR -
+    private func handleError(_ error: NetworkError) {
+        let message: String
+        
+        switch error {
+        case .unauthorized(_, _):
+            self.isUnauthorized = true
+            message = "Login session as expired. Please login again."
+        case .serverError(_ , let msg):
+            message = msg
+        default:
+            message = "Something went wrong"
+        }
+        
+        self.showErrorAlert(message)
+    }
+    
+    //MARK: - SHOW ERROR ALERT -
+    private func showErrorAlert(_ message: String) {
+        self.errorMessage = message
+        self.isShowErrorAlert = true
     }
 }

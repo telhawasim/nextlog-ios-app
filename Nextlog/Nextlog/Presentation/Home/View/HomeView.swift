@@ -154,6 +154,23 @@ struct HomeView: View {
         .onReceive(NotificationCenter.default.publisher(for: .employeeDidAdded)) { _ in
             self.viewModel.getAllEmployees()
         }
+        // Add notification in case existing employee has been deleted
+        .onReceive(NotificationCenter.default.publisher(for: .employeeDidDelete)) { _ in
+            self.viewModel.getAllEmployees()
+        }
+        // Error Alert for the user
+        .alert(isPresented: self.$viewModel.isShowErrorAlert) {
+            Alert(
+                title: Text("Error"),
+                message: Text(self.viewModel.errorMessage),
+                dismissButton: .default(Text("OK"), action: {
+                    if (self.viewModel.isUnauthorized) {
+                        self.viewModel.isUnauthorized = false
+                        Utilities.shared.removeTheUser(router: self.router)
+                    }
+                })
+            )
+        }
     }
 }
 

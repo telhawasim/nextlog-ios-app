@@ -28,7 +28,9 @@ struct TabbarView: View {
                     selectedTab: self.$selectedTab
                 )
             case .employees:
-                EmployeesView()
+                EmployeesView(
+                    viewModel: EmployeesView.ViewModel()
+                )
             case .logout:
                 EmptyView()
             }
