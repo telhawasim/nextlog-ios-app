@@ -105,8 +105,8 @@ extension AddEmployeeView.ViewModel {
                 "phone": "+92" + self.phone,
                 "designation": self.designationId,
                 "department": self.departmentId,
-                "dob": Utilities.shared.convertToISO8601(self.selectedDob) ?? "",
-                "date_of_joining": Utilities.shared.convertToISO8601(self.selectedDateOfJoining) ?? ""
+                "dob": Utilities.shared.convertToRequiredFormat(self.selectedDob) ?? "",
+                "date_of_joining": Utilities.shared.convertToRequiredFormat(self.selectedDateOfJoining) ?? ""
             ]
             
             NetworkManager.shared.multipartRequest(

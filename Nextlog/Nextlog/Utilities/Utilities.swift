@@ -47,16 +47,19 @@ class Utilities {
         return formatter.string(from: date)
     }
     
-    //MARK: - CONVERT TO ISO 8601 -
-    func convertToISO8601(_ dateString: String) -> String? {
+    //MARK: - CONVERT TO REQUIRED FORMAT -
+    func convertToRequiredFormat(_ dateString: String) -> String? {
         let inputFormatter = DateFormatter()
         inputFormatter.dateFormat = "dd MMM, yyyy"
         inputFormatter.locale = Locale(identifier: "en_US_POSIX")
         inputFormatter.timeZone = TimeZone(identifier: "UTC")
-
+        
         if let date = inputFormatter.date(from: dateString) {
-            let outputFormatter = ISO8601DateFormatter()
-            outputFormatter.formatOptions = [.withInternetDateTime, .withFractionalSeconds]
+            // Use DateFormatter to convert to the desired format
+            let outputFormatter = DateFormatter()
+            outputFormatter.dateFormat = "yyyy-MM-dd HH:mm:ss"
+            outputFormatter.timeZone = TimeZone(identifier: "UTC")
+            
             return outputFormatter.string(from: date)
         }
         

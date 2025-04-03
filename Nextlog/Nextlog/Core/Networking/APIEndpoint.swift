@@ -23,7 +23,7 @@ enum APIEndpoint {
     // DEPARTMENT
     case getDepartments
     // PROFILE
-    case addProfile(id: Int, name: String)
+    case addProfile(id: String, name: String)
     
     //MARK: - URL -
     var url: String {

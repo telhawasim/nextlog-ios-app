@@ -102,14 +102,21 @@ struct EmployeeDetailView: View {
                             .font(.getMedium(.h24))
                             .frame(maxWidth: .infinity, alignment: .leading)
                         if let profiles = self.viewModel.model?.profiles {
-                            ScrollView {
-                                LazyVStack(spacing: 20) {
-                                    ForEach(profiles, id: \.id) { profile in
-                                        EmployeeDetailCVListView()
+                            if profiles.count > 0 {
+                                ScrollView {
+                                    LazyVStack(spacing: 20) {
+                                        ForEach(Array(profiles.enumerated()), id: \.element.id) { (index, profile) in
+                                            EmployeeDetailCVListView(
+                                                index: index,
+                                                profile: profile
+                                            )
+                                        }
                                     }
+                                    .padding(.all, 1)
+                                    .padding(.top, 24)
                                 }
-                                .padding(.all, 1)
-                                .padding(.top, 24)
+                            } else {
+                                
                             }
                         } else {
                             ScrollView {
@@ -131,7 +138,10 @@ struct EmployeeDetailView: View {
             // Create Profile Popup
             CreateProfilePopUpView(
                 isShowPopUp: self.$viewModel.isShowProfilePopup,
-                value: self.$viewModel.profileName
+                value: self.$viewModel.profileName,
+                onPressDone: {
+                    self.viewModel.addProfileAPI()
+                }
             )
             // Delete Profile Popup
             DeleteProfilePopUpView(

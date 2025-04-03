@@ -11,6 +11,10 @@ struct EmployeeDetailCVListView: View {
     
     //MARK: - PROPERTIES -
     
+    //Normal
+    var index: Int
+    var profile: EmployeeDetailProfileResponse
+    
     //MARK: - VIEWS -
     var body: some View {
         // Parent View
@@ -31,17 +35,26 @@ struct EmployeeDetailCVListView: View {
             // Information
             VStack(alignment: .leading, spacing: 10) {
                 // Title
-                Text("Resume # 1")
-                    .font(.getBold(.h20))
+                Text("Resume # \(self.index + 1)")
+                    .font(.getSemibold(.h20))
                 // Profile
-                Text("iOS Developer")
-                    .font(.getSemibold(.h18))
+                Text(self.profile.title ?? "")
+                    .font(.getMedium(.h18))
                 // Date
-                Text("Thursday, 12th March 2025")
+                Text(self.formatDate(self.profile.createdAt ?? "") ?? "")
                     .font(.getRegular(.h16))
             }
             // Spacer
             Spacer()
+            // Options Button
+            Button(action: {
+                
+            }, label: {
+                Image(ImageEnum.icOptions.rawValue)
+                    .resizable()
+                    .aspectRatio(contentMode: .fill)
+                    .frame(width: 20, height: 25)
+            })
         }
         .padding()
         .clipShape(RoundedRectangle(cornerRadius: 20.0))
@@ -52,6 +65,29 @@ struct EmployeeDetailCVListView: View {
     }
 }
 
+//MARK: - FUNCTIONS -
+extension EmployeeDetailCVListView {
+    
+    //MARK: - FORMAT DATE -
+    func formatDate(_ dateString: String) -> String? {
+        let dateFormatter = DateFormatter()
+        
+        dateFormatter.locale = Locale(identifier: "en_US_POSIX")
+        dateFormatter.dateFormat = "yyyy-MM-dd HH:mm:ss"
+        
+        let date = dateFormatter.date(from: dateString)!
+        
+        let outputFormatter = DateFormatter()
+        outputFormatter.locale = Locale(identifier: "en_US_POSIX")
+        outputFormatter.dateFormat = "EEEE, MMM d, yyyy"
+        
+        return outputFormatter.string(from: date)
+    }
+}
+
 #Preview {
-    EmployeeDetailCVListView()
+    EmployeeDetailCVListView(
+        index: 0,
+        profile: EmployeeDetailProfileResponse()
+    )
 }

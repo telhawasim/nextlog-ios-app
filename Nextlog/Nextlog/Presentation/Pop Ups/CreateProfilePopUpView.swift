@@ -15,6 +15,7 @@ struct CreateProfilePopUpView: View {
     @Binding var isShowPopUp: Bool
     @Binding var value: String
     //Normal
+    var onPressDone: (() -> Void)?
     var isDisabled: Bool {
         return self.value.isEmpty
     }
@@ -60,7 +61,10 @@ struct CreateProfilePopUpView: View {
                     // Done Button
                     AppCustomButton(
                         title: "Done",
-                        isDisabled: self.isDisabled
+                        isDisabled: self.isDisabled,
+                        onPress: {
+                            self.onPressDone?()
+                        }
                     )
                         .frame(width: 200, height: 44)
                     .padding(.vertical, 30)
@@ -74,6 +78,7 @@ struct CreateProfilePopUpView: View {
                     // Cross Button
                     Button(action: {
                         self.isShowPopUp = false
+                        self.value = ""
                     }, label: {
                         Image(ImageEnum.icCross.rawValue)
                             .resizable()

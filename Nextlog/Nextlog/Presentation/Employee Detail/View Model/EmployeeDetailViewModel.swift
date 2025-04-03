@@ -86,6 +86,30 @@ extension EmployeeDetailView.ViewModel {
             .store(in: &self.cancellables)
     }
     
+    //MARK: - ADD PROFILE API -
+    func addProfileAPI() {
+        self.isLoading = true
+        
+        NetworkManager.shared.request(endPoint: APIEndpoint.addProfile(id: self.employeeId, name: self.profileName), responseType: AddProfileResponseModel.self)
+            .sink { result in
+                self.isLoading = false
+                
+                switch result {
+                case .failure(let error):
+                    self.handleError(error)
+                case .finished:
+                    break
+                }
+            } receiveValue: { _ in
+                self.isLoading = false
+                
+                self.profileName = ""
+                self.isShowProfilePopup = false
+                self.fetchEmployeeDetails(id: self.employeeId)
+            }
+            .store(in: &self.cancellables)
+    }
+    
     //MARK: - HANDLE ERROR -
     private func handleError(_ error: NetworkError) {
         let message: String

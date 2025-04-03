@@ -18,7 +18,7 @@ struct EmployeeDetailModel: Codable {
     var empID: Int?
     var designation, department: DesignationModel?
     var avatar, createdAt: String?
-    var profiles: [Profile]?
+    var profiles: [EmployeeDetailProfileResponse]?
 
     enum CodingKeys: String, CodingKey {
         case id, name, email
@@ -30,7 +30,7 @@ struct EmployeeDetailModel: Codable {
 }
 
 // MARK: - Profile -
-struct Profile: Codable {
+struct EmployeeDetailProfileResponse: Codable {
     var id, title, createdAt: String?
 
     enum CodingKeys: String, CodingKey {

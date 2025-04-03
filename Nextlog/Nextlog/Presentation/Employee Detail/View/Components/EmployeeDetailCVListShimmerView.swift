@@ -34,6 +34,10 @@ struct EmployeeDetailCVListShimmerView: View {
             }
             // Spacer
             Spacer()
+            // Options
+            ShimmerEffect()
+                .frame(width: 8, height: 25)
+                .clipShape(Capsule())
         }
         .padding()
         .clipShape(RoundedRectangle(cornerRadius: 20.0))
