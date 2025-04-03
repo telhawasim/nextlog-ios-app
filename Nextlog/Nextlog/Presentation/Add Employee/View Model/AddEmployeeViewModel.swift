@@ -27,6 +27,23 @@ extension AddEmployeeView {
         @Published var sourceType: UIImagePickerController.SourceType = .camera
         @Published var isShowDOBDatePicker: Bool = false
         @Published var isShowDateOfJoiningPicker: Bool = false
+        @Published var isShowDesignationPicker: Bool = false
+        @Published var isShowDepartmentPicker: Bool = false
+        @Published var isShowErrorAlert: Bool = false
+        @Published var errorMessage: String = ""
+        //Params (Published)
+        @Published var name: String = ""
+        @Published var empID: String = ""
+        @Published var designationId: String = ""
+        @Published var designation: String = ""
+        @Published var departmentId: String = ""
+        @Published var department: String = ""
+        @Published var selectedDob: String = ""
+        @Published var dob: Date = Date()
+        @Published var email: String = ""
+        @Published var phone: String = ""
+        @Published var selectedDateOfJoining: String = ""
+        @Published var dateOfJoining: Date = Date()
         
         //MARK: - INITIALIZER -
         override init() {
@@ -46,7 +63,12 @@ extension AddEmployeeView.ViewModel {
             .sink { result in
                 switch result {
                 case .failure(let error):
-                    print(error.localizedDescription)
+                    switch error {
+                    case .unauthorized(_, _):
+                        self.errorHandling("Login session as expired. Please login again.")
+                    default:
+                        print(error.localizedDescription)
+                    }
                 case .finished:
                     break
                 }
@@ -62,7 +84,12 @@ extension AddEmployeeView.ViewModel {
             .sink { result in
                 switch result {
                 case .failure(let error):
-                    print(error.localizedDescription)
+                    switch error {
+                    case .unauthorized(_, _):
+                        self.errorHandling("Login session as expired. Please login again.")
+                    default:
+                        print(error.localizedDescription)
+                    }
                 case .finished:
                     break
                 }
@@ -70,5 +97,100 @@ extension AddEmployeeView.ViewModel {
                 self.departments = response.departments
             }
             .store(in: &self.cancellables)
+    }
+    
+    //MARK: - ADD EMPLOYEE -
+    func addEmployee(completion: @escaping (Bool) -> Void) {
+        guard let avatar = self.selectedImage else {
+            self.errorHandling("Profile image is required")
+            return
+        }
+        
+        if (self.textFieldsValidation()) {
+            let params: [String: Any] = [
+                "name": self.name,
+                "email": self.email,
+                "emp_id": Int(self.empID) ?? 0,
+                "phone": "+92" + self.phone,
+                "designation": self.designationId,
+                "department": self.departmentId,
+                "dob": Utilities.shared.convertToISO8601(self.selectedDob) ?? "",
+                "date_of_joining": Utilities.shared.convertToISO8601(self.selectedDateOfJoining) ?? ""
+            ]
+            
+            NetworkManager.shared.multipartRequest(
+                endPoint: .addEmployee,
+                image: avatar,
+                parameters: params,
+                responseType: AddEmployeeResponseModel.self
+            )
+            .sink { result in
+                switch result {
+                case .failure(let error):
+                    print(error)
+                    completion(false)
+                case .finished:
+                    break
+                }
+            } receiveValue: { response in
+                NotificationCenter.default.post(name: .employeeDidAdded, object: nil)
+                completion(true)
+            }
+            .store(in: &self.cancellables)
+        }
+    }
+    
+    //MARK: - GET DESIGNATION -
+    func getDesignationId() {
+        if let designation = self.desigations?.first(where: { $0.name == self.designation }) {
+            self.designationId = designation.id ?? ""
+        }
+    }
+    
+    //MARK: - GET DEPARTMENT ID -
+    func getDepartmentId() {
+        if let department = self.departments?.first(where: { $0.name == self.department }) {
+            self.departmentId = department.id ?? ""
+        }
+    }
+    
+    //MARK: - TEXTFIELDS VALIDATION -
+    private func textFieldsValidation() -> Bool {
+        var errorMessage: String?
+        
+        if (self.name == "") {
+            errorMessage = "Name is required"
+        } else if (self.email == "") {
+            errorMessage = "Email is required"
+        } else if !(self.email.isValidEmail()) {
+            errorMessage = "Email must be valid"
+        } else if (self.phone == "") {
+            errorMessage = "Phone is required"
+        } else if (self.phone.count != 10) {
+            errorMessage = "Phone must be valid"
+        } else if (self.empID == "") {
+            errorMessage = "Employee ID is required"
+        } else if (self.designationId == "") {
+            errorMessage = "Designation ID is required"
+        } else if (self.departmentId == "") {
+            errorMessage = "Department ID is required"
+        } else if (self.selectedDob == "") {
+            errorMessage = "Date of birth is required"
+        } else if (self.selectedDateOfJoining == "") {
+            errorMessage = "Date of joining is required"
+        }
+        
+        if let error = errorMessage {
+            self.errorHandling(error)
+            return false
+        } else {
+            return true
+        }
+    }
+    
+    //MARK: - ERROR HANDLING -
+    private func errorHandling(_ message: String) {
+        self.errorMessage = message
+        self.isShowErrorAlert = true
     }
 }

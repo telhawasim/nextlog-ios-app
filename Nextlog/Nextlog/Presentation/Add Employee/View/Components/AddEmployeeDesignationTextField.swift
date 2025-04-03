@@ -15,6 +15,7 @@ struct AddEmployeeDesignationTextField: View {
     @Binding var value: String
     //Normal
     var isDesignation: Bool = true
+    var onPress: (() -> Void)?
     
     //MARK: - VIEWS -
     var body: some View {
@@ -29,16 +30,21 @@ struct AddEmployeeDesignationTextField: View {
                 Text("*")
                     .foregroundStyle(Color.red)
             }
-            HStack {
-                // Text
-                Text(self.value == "" ? (self.isDesignation ? "Select Designation" : "Select Department") : self.value)
-                .font(.getRegular(.h16))
-                .foregroundStyle(self.value == "" ? Color.gray.opacity(0.5) : Color.black)
-                // Spacer
-                Spacer()
-                //Icon
-                Image(systemName: ImageEnum.icChevronDown.rawValue)
-            }
+            Button(action: {
+                self.onPress?()
+            }, label: {
+                HStack {
+                    // Text
+                    Text(self.value == "" ? (self.isDesignation ? "Select Designation" : "Select Department") : self.value)
+                    .font(.getRegular(.h16))
+                    .foregroundStyle(self.value == "" ? Color.gray.opacity(0.5) : Color.black)
+                    // Spacer
+                    Spacer()
+                    //Icon
+                    Image(systemName: ImageEnum.icChevronDown.rawValue)
+                        .foregroundStyle(Color.black)
+                }
+            })
             // Divider
             Divider()
         }

@@ -12,6 +12,7 @@ struct EmployeeDetailButtonView: View {
     //MARK: - PROPERTIES -
     
     var image: String = ""
+    var color: Color = .black
     var onPress: (() -> Void)?
     
     //MARK: - VIEWS -
@@ -23,7 +24,7 @@ struct EmployeeDetailButtonView: View {
                 .resizable()
                 .aspectRatio(contentMode: .fit)
                 .frame(width: 20, height: 20)
-                .foregroundStyle(Color.black)
+                .foregroundStyle(self.color)
         })
         .frame(width: 40, height: 40)
         .background(Color.white)

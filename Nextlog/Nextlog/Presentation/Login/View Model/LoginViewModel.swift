@@ -25,6 +25,7 @@ extension LoginView {
         @Published var id: String = ""
         @Published var errorMessage: String = ""
         @Published var isShowErrorAlert: Bool = false
+        @Published var isLoading: Bool = false
         
         //MARK: - INITIALIZER -
     }
@@ -35,18 +36,25 @@ extension LoginView.ViewModel {
     
     //MARK: - LOGIN AS ADMIN -
     func loginAsAdmin(completion: @escaping ((Bool) -> Void)) {
+        self.isLoading = true
+        
         NetworkManager.shared.request(endPoint: APIEndpoint.login(email: self.email, password: self.password, role: "admin"), responseType: LoginResponseModel.self)
             .sink { result in
+                self.isLoading = false
+                
                 switch result {
                 case .failure(let error):
-                    self.handleErrorMessage(error.localizedDescription)
+                    self.handleError(error)
                     completion(false)
                 case .finished:
                     break
                 }
             } receiveValue: { response in
+                self.isLoading = false
+                
                 AppStorage.user = response.data
                 AppStorage.accessToken = response.accessToken
+                
                 completion(true)
             }
             .store(in: &self.cancellables)
@@ -54,18 +62,25 @@ extension LoginView.ViewModel {
     
     //MARK: - LOGIN AS EMPLOYEE -
     func loginAsEmployee(completion: @escaping ((Bool) -> Void)) {
+        self.isLoading = true
+        
         NetworkManager.shared.request(endPoint: APIEndpoint.login(email: self.email, emp_id: Int(self.id), role: "employee"), responseType: LoginResponseModel.self)
             .sink { result in
+                self.isLoading = false
+                
                 switch result {
                 case .failure(let error):
-                    self.handleErrorMessage(error.localizedDescription)
+                    self.handleError(error)
                     completion(false)
                 case .finished:
                     break
                 }
             } receiveValue: { response in
+                self.isLoading = false
+                
                 AppStorage.user = response.data
                 AppStorage.accessToken = response.accessToken
+                
                 completion(true)
             }
             .store(in: &self.cancellables)
@@ -111,9 +126,30 @@ extension LoginView.ViewModel {
         }
     }
     
+    //MARK: - HANDLE ERROR -
+    private func handleError(_ error: NetworkError) {
+        let message: String
+        
+        switch error {
+        case .unauthorized(_, let msg), .serverError(_, let msg):
+            message = msg
+        default:
+            message = "Something went wrong"
+        }
+        
+        self.handleErrorMessage(message)
+    }
+    
     //MARK: - HANDLE ERROR MESSAGE -
     private func handleErrorMessage(_ message: String) {
         self.errorMessage = message
         self.isShowErrorAlert = true
+    }
+    
+    //MARK: - RESET TEXTFIELDS -
+    func resetTextfields() {
+        self.email = ""
+        self.id = ""
+        self.password = ""
     }
 }

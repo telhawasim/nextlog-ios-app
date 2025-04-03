@@ -47,4 +47,21 @@ extension EmployeeDetailView.ViewModel {
             }
             .store(in: &self.cancellables)
     }
+    
+    //MARK: - DELETE EMPLOYEE API -
+    func deleteEmployeeAPI(completion: @escaping (Bool) -> Void) {
+        NetworkManager.shared.request(endPoint: APIEndpoint.deleteEmployee(id: self.employeeId), responseType: DeleteEmployeeResponseModel.self)
+            .sink { result in
+                switch result {
+                case .failure(let error):
+                    print(error.localizedDescription)
+                    completion(false)
+                case .finished:
+                    break
+                }
+            } receiveValue: { _ in
+                completion(true)
+            }
+            .store(in: &self.cancellables)
+    }
 }

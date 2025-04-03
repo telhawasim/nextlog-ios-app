@@ -150,6 +150,10 @@ struct HomeView: View {
         }
         .padding(.horizontal, 16)
         .padding(.top, 10)
+        // Add notification in case new user has been added
+        .onReceive(NotificationCenter.default.publisher(for: .employeeDidAdded)) { _ in
+            self.viewModel.getAllEmployees()
+        }
     }
 }
 

@@ -16,6 +16,8 @@ enum APIEndpoint {
     // EMPLOYEE
     case getEmployees(page: Int = 1, limit: Int = 10)
     case getEmployeeDetails(id: String)
+    case addEmployee
+    case deleteEmployee(id: String)
     // DESIGNATION
     case getDesignations
     // DEPARTMENT
@@ -30,6 +32,10 @@ enum APIEndpoint {
             return APIEndpoint.baseURL + "employee/all"
         case .getEmployeeDetails(let id):
             return APIEndpoint.baseURL + "employee/detail/\(id)"
+        case .addEmployee:
+            return APIEndpoint.baseURL + "employee/add"
+        case .deleteEmployee(let id):
+            return APIEndpoint.baseURL + "employee/delete/\(id)"
         case .getDesignations:
             return APIEndpoint.baseURL + "designation/all"
         case .getDepartments:
@@ -46,6 +52,10 @@ enum APIEndpoint {
             return .get
         case .getEmployeeDetails:
             return .get
+        case .addEmployee:
+            return .post
+        case .deleteEmployee:
+            return .delete
         case .getDesignations:
             return .get
         case .getDepartments:
@@ -55,10 +65,18 @@ enum APIEndpoint {
     
     //MARK: - HEADER -
     var headers: HTTPHeaders {
-        return HTTPHeaders([
-            HTTPHeader(name: "Content-Type", value: "application/json"),
-            HTTPHeader(name: "Accept", value: "application/json")
-        ])
+        switch self {
+        case .addEmployee:
+            return HTTPHeaders([
+                HTTPHeader(name: "Content-Type", value: "multipart/form-data"),
+                HTTPHeader(name: "Accept", value: "application/json")
+            ])
+        default:
+            return HTTPHeaders([
+                HTTPHeader(name: "Content-Type", value: "application/json"),
+                HTTPHeader(name: "Accept", value: "application/json")
+            ])
+        }
     }
     
     //MARK: - PARAMETERS -
@@ -81,6 +99,10 @@ enum APIEndpoint {
         case .getEmployees:
             return nil
         case .getEmployeeDetails:
+            return nil
+        case .addEmployee:
+            return nil
+        case .deleteEmployee:
             return nil
         case .getDesignations:
             return nil

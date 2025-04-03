@@ -33,7 +33,7 @@ extension HomeView {
 extension HomeView.ViewModel {
     
     //MARK: - GET ALL EMPLOYEES -
-    private func getAllEmployees() {
+    func getAllEmployees() {
         NetworkManager.shared.request(endPoint: APIEndpoint.getEmployees(page: 1, limit: 5), responseType: GetAllEmployeeResponse.self)
             .sink { result in
                 switch result {

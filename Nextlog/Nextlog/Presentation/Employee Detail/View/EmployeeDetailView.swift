@@ -59,20 +59,37 @@ struct EmployeeDetailView: View {
                         }
                         // Spacer
                         Spacer()
-                        // Information
-                        VStack(alignment: .leading, spacing: 7) {
-                            // Name
-                            Text(self.viewModel.model?.name ?? "")
-                                .font(.getBold(.h20))
-                                .foregroundStyle(Color.white)
-                            // Designation
-                            Text(self.viewModel.model?.designation?.name ?? "")
-                                .font(.getMedium())
-                                .foregroundStyle(Color.white)
-                            // Email
-                            Text(verbatim: self.viewModel.model?.email ?? "")
-                                .font(.getRegular())
-                                .foregroundStyle(Color.white)
+                        // Information and Delete Button
+                        HStack {
+                            // Information
+                            VStack(alignment: .leading, spacing: 7) {
+                                // Name
+                                Text(self.viewModel.model?.name ?? "")
+                                    .font(.getBold(.h20))
+                                    .foregroundStyle(Color.white)
+                                // Designation
+                                Text(self.viewModel.model?.designation?.name ?? "")
+                                    .font(.getMedium())
+                                    .foregroundStyle(Color.white)
+                                // Email
+                                Text(verbatim: self.viewModel.model?.email ?? "")
+                                    .font(.getRegular())
+                                    .foregroundStyle(Color.white)
+                            }
+                            // Spacer
+                            Spacer()
+                            // Delete Button
+                            EmployeeDetailButtonView(
+                                image: ImageEnum.icDelete.rawValue,
+                                color: .red,
+                                onPress: {
+                                    self.viewModel.deleteEmployeeAPI { isSuccess in
+                                        if (isSuccess) {
+                                            self.router.pop()
+                                        }
+                                    }
+                                }
+                            )
                         }
                     }
                     .padding(.horizontal, 16)

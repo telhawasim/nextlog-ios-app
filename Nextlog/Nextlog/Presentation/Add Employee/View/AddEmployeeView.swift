@@ -14,17 +14,7 @@ struct AddEmployeeView: View {
     //EnvironmentObject
     @EnvironmentObject var router: Routing
     //StateObject
-    @StateObject var viewModel = AddEmployeeView.ViewModel()
-    //State
-    @State private var name: String = ""
-    @State private var designation: String = ""
-    @State private var department: String = ""
-    @State private var selectedDob: String = ""
-    @State private var dob: Date = Date()
-    @State private var email: String = ""
-    @State private var phone: String = ""
-    @State private var selectedDateOfJoining: String = ""
-    @State private var dateOfJoining: Date = Date()
+    @StateObject var viewModel = AddEmployeeView.ViewModel()    
     
     //MARK: - VIEWS -
     var body: some View {
@@ -77,37 +67,47 @@ struct AddEmployeeView: View {
                     VStack(spacing: 20) {
                         // Name Textfield
                         AddEmployeeNameTextField(
-                            value: self.$name
+                            value: self.$viewModel.name
+                        )
+                        // Email Address Textfield
+                        AddEmployeeEmailTextField(
+                            value: self.$viewModel.email
+                        )
+                        // Phone Number Textfield
+                        AddEmployeePhoneTextField(
+                            value: self.$viewModel.phone
+                        )
+                        // EMP ID Textfield
+                        AddEmployeeEmployeeIDTextField(
+                            value: self.$viewModel.empID
                         )
                         // Designation Textfield
                         AddEmployeeDesignationTextField(
-                            value: self.$designation,
-                            isDesignation: true
-                        )
-                        // Designation Textfield
-                        AddEmployeeDesignationTextField(
-                            value: self.$department,
-                            isDesignation: false
+                            value: self.$viewModel.designation,
+                            isDesignation: true,
+                            onPress: {
+                                self.viewModel.isShowDesignationPicker.toggle()
+                            }
                         )
                         // Department Textfield
+                        AddEmployeeDesignationTextField(
+                            value: self.$viewModel.department,
+                            isDesignation: false,
+                            onPress: {
+                                self.viewModel.isShowDepartmentPicker.toggle()
+                            }
+                        )
+                        // Date of Birth Textfield
                         AddEmployeeDobTextField(
-                            selectedValue: self.$selectedDob,
+                            selectedValue: self.$viewModel.selectedDob,
                             isDOB: true,
                             onPress: {
                                 self.viewModel.isShowDOBDatePicker.toggle()
                             }
                         )
-                        // Email Address Textfield
-                        AddEmployeeEmailTextField(
-                            value: self.$email
-                        )
-                        // Phone Number Textfield
-                        AddEmployeePhoneTextField(
-                            value: self.$phone
-                        )
                         // Date of Joining Textfield
                         AddEmployeeDobTextField(
-                            selectedValue: self.$selectedDateOfJoining,
+                            selectedValue: self.$viewModel.selectedDateOfJoining,
                             isDOB: false,
                             onPress: {
                                 self.viewModel.isShowDateOfJoiningPicker.toggle()
@@ -119,7 +119,11 @@ struct AddEmployeeView: View {
                     AppCustomButton(
                         title: "Add",
                         onPress: {
-                            
+                            self.viewModel.addEmployee { isSuccess in
+                                if (isSuccess) {
+                                    self.router.pop()
+                                }
+                            }
                         }
                     )
                     .padding(.top, 60)
@@ -148,19 +152,50 @@ struct AddEmployeeView: View {
             // Date of Birth Picker
             DatePickerView(
                 isShowDatePicker: self.$viewModel.isShowDOBDatePicker,
-                selectedValue: self.$selectedDob,
-                selectedDate: self.$dob
+                selectedValue: self.$viewModel.selectedDob,
+                selectedDate: self.$viewModel.dob
             )
             .opacity(self.viewModel.isShowDOBDatePicker ? 1 : 0)
             .animation(.default, value: self.viewModel.isShowDOBDatePicker)
             // Date Picker
             DatePickerView(
                 isShowDatePicker: self.$viewModel.isShowDateOfJoiningPicker,
-                selectedValue: self.$selectedDateOfJoining,
-                selectedDate: self.$dateOfJoining
+                selectedValue: self.$viewModel.selectedDateOfJoining,
+                selectedDate: self.$viewModel.dateOfJoining
             )
             .opacity(self.viewModel.isShowDateOfJoiningPicker ? 1 : 0)
             .animation(.default, value: self.viewModel.isShowDateOfJoiningPicker)
+            // Designation Picker
+            DesignationPickerView(
+                isShowPicker: self.$viewModel.isShowDesignationPicker,
+                values: self.viewModel.desigations ?? [],
+                onPress: { designation in
+                    self.viewModel.designation = designation
+                    self.viewModel.getDesignationId()
+                }
+            )
+            .opacity(self.viewModel.isShowDesignationPicker ? 1 : 0)
+            .animation(.default, value: self.viewModel.isShowDesignationPicker)
+            // Department Picker
+            DesignationPickerView(
+                isShowPicker: self.$viewModel.isShowDepartmentPicker,
+                values: self.viewModel.departments ?? [],
+                onPress: { department in
+                    self.viewModel.department = department
+                    self.viewModel.getDepartmentId()
+                }
+            )
+            .opacity(self.viewModel.isShowDepartmentPicker ? 1 : 0)
+            .animation(.default, value: self.viewModel.isShowDepartmentPicker)
+        }
+        .alert(isPresented: self.$viewModel.isShowErrorAlert) {
+            Alert(
+                title: Text("Error"),
+                message: Text(self.viewModel.errorMessage),
+                dismissButton: .default(Text("OK"), action: {
+                    Utilities.shared.removeTheUser(router: self.router)
+                })
+            )
         }
     }
 }
