@@ -52,12 +52,14 @@ struct EmployeeDetailView: View {
                                 // Spacer
                                 Spacer()
                                 // Profile Button
-                                EmployeeDetailButtonView(
-                                    image: ImageEnum.icResume.rawValue,
-                                    onPress: {
-                                        self.viewModel.isShowProfilePopup = true
-                                    }
-                                )
+                                if (AppStorage.user?.role == RoleType.admin.rawValue) {
+                                    EmployeeDetailButtonView(
+                                        image: ImageEnum.icResume.rawValue,
+                                        onPress: {
+                                            self.viewModel.isShowProfilePopup = true
+                                        }
+                                    )
+                                }
                             }
                             // Spacer
                             Spacer()
@@ -81,13 +83,15 @@ struct EmployeeDetailView: View {
                                 // Spacer
                                 Spacer()
                                 // Delete Button
-                                EmployeeDetailButtonView(
-                                    image: ImageEnum.icDelete.rawValue,
-                                    color: .red,
-                                    onPress: {
-                                        self.viewModel.isShowDeleteProfilePopup = true
-                                    }
-                                )
+                                if (AppStorage.user?.role == RoleType.admin.rawValue) {
+                                    EmployeeDetailButtonView(
+                                        image: ImageEnum.icDelete.rawValue,
+                                        color: .red,
+                                        onPress: {
+                                            self.viewModel.isShowDeleteProfilePopup = true
+                                        }
+                                    )
+                                }
                             }
                         }
                         .padding(.horizontal, 16)
@@ -116,7 +120,17 @@ struct EmployeeDetailView: View {
                                     .padding(.top, 24)
                                 }
                             } else {
-                                
+                                // Spacer
+                                Spacer()
+                                // Empty State
+                                EmployeeDetailEmptyStateView(
+                                    role: AppStorage.user?.role ?? "",
+                                    onPress: {
+                                        self.viewModel.isShowProfilePopup = true
+                                    }
+                                )
+                                // Spacer
+                                Spacer()
                             }
                         } else {
                             ScrollView {

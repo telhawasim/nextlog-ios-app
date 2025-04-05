@@ -7,6 +7,11 @@
 
 import Foundation
 
+enum RoleType: String {
+    case admin
+    case employee
+}
+
 enum ScreenType: Hashable {
     case login(LoginView.ViewModel)
     case tabbar(TabbarView.ViewModel)
