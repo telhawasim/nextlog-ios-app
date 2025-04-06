@@ -78,6 +78,12 @@ extension AppEmptyState {
             return "Want to add trainings & certifications?"
         case .awards:
             return "Want to add awards & honors?"
+        case .technicalSkills:
+            return "Want to add technical skills?"
+        case .nonTechnicalSkills:
+            return "Want to add non technical skills?"
+        case .tools:
+            return "Want to add tools?"
         default:
             return ""
         }

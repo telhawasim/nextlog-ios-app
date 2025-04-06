@@ -16,7 +16,7 @@ struct CreateProfileView: View {
     //StateObject
     @StateObject var viewModel: CreateProfileView.ViewModel
     //State
-    @State var selectedCategory: CategoryType = .education
+    @State var selectedCategory: CategoryType = .skills
     @State var currentCompany: String = ""
     
     //MARK: - VIEWS -
@@ -275,7 +275,127 @@ struct CreateProfileView: View {
                                 .padding(.top, 15)
                             }
                         case .skills:
-                            EmptyView()
+                            // Technical Skills Header
+                            CreateProfileHeaderView(
+                                title: "Technical Skills"
+                            )
+                            // In case technical skills are empty
+                            if (self.viewModel.technicalSkills.isEmpty) {
+                                // Empty State
+                                AppEmptyState(
+                                    emptyState: .technicalSkills,
+                                    onPress: {
+                                        self.scrollToNewlyAddedTechnicalSkills(proxy)
+                                    }
+                                )
+                            } else {
+                                LazyVStack(spacing: 10) {
+                                    // Awards Listing
+                                    ForEach(self.viewModel.technicalSkills.indices, id: \.self) { index in
+                                        CreateProfileSkillView(
+                                            skill: self.$viewModel.technicalSkills[index],
+                                            index: index,
+                                            onPressDelete: {
+                                                self.deleteTheTechnicalSkills(index)
+                                            }
+                                        )
+                                        .id("technical_skills_\(index)")
+                                    }
+                                    // Only show add more button when '0...2' technical skills
+                                    if (self.viewModel.technicalSkills.count <= 2) {
+                                        // Add More Button
+                                        CreateProfileAddMoreView(
+                                            onPress: {
+                                                self.scrollToNewlyAddedTechnicalSkills(proxy)
+                                            }
+                                        )
+                                        .padding(.vertical, 10)
+                                    }
+                                }
+                                .padding(.top, 15)
+                            }
+                            // Non-Technical Skills Header
+                            CreateProfileHeaderView(
+                                title: "Non Technical Skills"
+                            )
+                            .padding(.top, 20)
+                            // In case technical skills are empty
+                            if (self.viewModel.nonTechnicalSkills.isEmpty) {
+                                // Empty State
+                                AppEmptyState(
+                                    emptyState: .nonTechnicalSkills,
+                                    onPress: {
+                                        self.scrollToNewlyAddedNonTechnicalSkills(proxy)
+                                    }
+                                )
+                            } else {
+                                LazyVStack(spacing: 10) {
+                                    // Awards Listing
+                                    ForEach(self.viewModel.nonTechnicalSkills.indices, id: \.self) { index in
+                                        CreateProfileSkillView(
+                                            skill: self.$viewModel.nonTechnicalSkills[index],
+                                            index: index,
+                                            onPressDelete: {
+                                                self.deleteTheNonTechnicalSkills(index)
+                                            }
+                                        )
+                                        .id("non_technical_skills_\(index)")
+                                    }
+                                    // Only show add more button when '0...2' non technical skills
+                                    if (self.viewModel.nonTechnicalSkills.count <= 2) {
+                                        // Add More Button
+                                        CreateProfileAddMoreView(
+                                            onPress: {
+                                                self.scrollToNewlyAddedNonTechnicalSkills(proxy)
+                                            }
+                                        )
+                                        .padding(.vertical, 10)
+                                    }
+                                }
+                                .padding(.top, 15)
+                            }
+                            // Tools Skills Header
+                            CreateProfileHeaderView(
+                                title: "Tools"
+                            )
+                            .padding(.top, 20)
+                            // In case tools are empty
+                            if (self.viewModel.tools.isEmpty) {
+                                // Empty State
+                                AppEmptyState(
+                                    emptyState: .tools,
+                                    onPress: {
+                                        self.scrollToNewlyAddedTools(proxy)
+                                    }
+                                )
+                            } else {
+                                LazyVStack(spacing: 10) {
+                                    // Tools Listing
+                                    ForEach(self.viewModel.tools.indices, id: \.self) { index in
+                                        CreateProfileSkillView(
+                                            skill: self.$viewModel.tools[index],
+                                            title: "Tool",
+                                            placeholder: "Enter tool",
+                                            index: index,
+                                            onPressDelete: {
+                                                self.deleteTheTools(index)
+                                            }
+                                        )
+                                        .id("tools_\(index)")
+                                    }
+                                    // Only show add more button when '0...2' tools
+                                    if (self.viewModel.tools.count <= 2) {
+                                        // Add More Button
+                                        CreateProfileAddMoreView(
+                                            onPress: {
+                                                self.scrollToNewlyAddedTools(proxy)
+                                            }
+                                        )
+                                        .padding(.vertical, 10)
+                                    }
+                                }
+                                .padding(.top, 15)
+                            }
                         case .projects:
                             EmptyView()
                         }
@@ -315,10 +435,6 @@ struct CreateProfileView: View {
         .padding(.horizontal, 16)
         .padding(.vertical, 20)
         .animation(.default, value: self.selectedCategory)
-        .animation(.default, value: self.viewModel.previousExperience.count)
-        .animation(.default, value: self.viewModel.education.count)
-        .animation(.default, value: self.viewModel.certificates.count)
-        .animation(.default, value: self.viewModel.awards.count)
     }
 }
 
@@ -357,11 +473,60 @@ extension CreateProfileView {
         }
     }
     
+    //MARK: - ADD PREVIOUS EXPERIENCE -
+    func addPreviousExperience() {
+        withAnimation {
+            self.viewModel.previousExperience.append(ExperienceInfoUserModel.setInitialData())
+        }
+    }
+    
+    //MARK: - ADD EDUCATION -
+    func addEducation() {
+        withAnimation {
+            self.viewModel.education.append(EducationInfoUserModel.setIntialData())
+        }
+    }
+    
+    //MARK: - ADD CERTIFICATES -
+    func addCertificates() {
+        withAnimation {
+            self.viewModel.certificates.append(CertificateInfoUserModel.setInitialData())
+        }
+    }
+    
+    //MARK: - ADD AWARDS -
+    func addAwards() {
+        withAnimation {
+            self.viewModel.awards.append(AwardsInfoUserModel.setInitialData())
+        }
+    }
+    
+    //MARK: - ADD TECHNICAL SKILLS -
+    func addTechnicalSkills() {
+        withAnimation {
+            self.viewModel.technicalSkills.append(SkillInfoUserModel.setInitialData())
+        }
+    }
+    
+    //MARK: - ADD NON TECHNICAL SKILLS -
+    func addNonTechnicalSkills() {
+        withAnimation {
+            self.viewModel.nonTechnicalSkills.append(SkillInfoUserModel.setInitialData())
+        }
+    }
+    
+    //MARK: - ADD TOOLS -
+    func addTools() {
+        withAnimation {
+            self.viewModel.tools.append(SkillInfoUserModel.setInitialData())
+        }
+    }
+    
     //MARK: - SCROLL VIEW TO NEWLY ADDED EXPERIENCE -
     private func scrollViewToNewlyAddedExperience(_ proxy: ScrollViewProxy) {
         var index: Int
         
-        self.viewModel.addPreviousExperience()
+        self.addPreviousExperience()
         
         index = self.viewModel.previousExperience.count - 1
         
@@ -376,7 +541,7 @@ extension CreateProfileView {
     private func scrollToNewlyAddedEducation(_ proxy: ScrollViewProxy) {
         var index: Int
         
-        self.viewModel.addEducation()
+        self.addEducation()
         
         index = self.viewModel.education.count - 1
         
@@ -391,7 +556,7 @@ extension CreateProfileView {
     private func scrollToNewlyAddedCertificates(_ proxy: ScrollViewProxy) {
         var index: Int
         
-        self.viewModel.addCertificates()
+        self.addCertificates()
         
         index = self.viewModel.certificates.count - 1
         
@@ -406,7 +571,7 @@ extension CreateProfileView {
     private func scrollToNewlyAddedAwards(_ proxy: ScrollViewProxy) {
         var index: Int
         
-        self.viewModel.addAwards()
+        self.addAwards()
         
         index = self.viewModel.awards.count - 1
         
@@ -417,24 +582,98 @@ extension CreateProfileView {
         }
     }
     
+    //MARK: - SCROLL TO NEWLY ADDED TECHNICAL SKILLS
+    private func scrollToNewlyAddedTechnicalSkills(_ proxy: ScrollViewProxy) {
+        var index: Int
+        
+        self.addTechnicalSkills()
+        
+        index = self.viewModel.technicalSkills.count - 1
+        
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
+            withAnimation {
+                proxy.scrollTo("technical_skills_\(index)", anchor: .top)
+            }
+        }
+    }
+    
+    //MARK: - SCROLL TO NEWLY ADDED NON TECHNICAL SKILLS -
+    private func scrollToNewlyAddedNonTechnicalSkills(_ proxy: ScrollViewProxy) {
+        var index: Int
+        
+        self.addNonTechnicalSkills()
+        
+        index = self.viewModel.nonTechnicalSkills.count - 1
+        
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
+            withAnimation {
+                proxy.scrollTo("non_technical_skills_\(index)", anchor: .top)
+            }
+        }
+    }
+    
+    //MARK: - SCROLL TO NEWLY ADDED TOOLS -
+    private func scrollToNewlyAddedTools(_ proxy: ScrollViewProxy) {
+        var index: Int
+        
+        self.addTools()
+        
+        index = self.viewModel.tools.count - 1
+        
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
+            withAnimation {
+                proxy.scrollTo("tools_\(index)", anchor: .top)
+            }
+        }
+    }
+    
     //MARK: - DELETE THE EXPERIENCE -
     private func deleteTheExperience(_ index: Int) {
-        self.viewModel.previousExperience.remove(at: index)
+        withAnimation {
+            self.viewModel.previousExperience.remove(at: index)
+        }
     }
     
     //MARK: - DELETE THE EDUCATION -
     private func deleteTheEducation(_ index: Int) {
-        self.viewModel.education.remove(at: index)
+        withAnimation {
+            self.viewModel.education.remove(at: index)
+        }
     }
     
     //MARK: - DELETE THE CERTIFICATES -
     private func deleteTheCertificates(_ index: Int) {
-        self.viewModel.certificates.remove(at: index)
+        withAnimation {
+            self.viewModel.certificates.remove(at: index)
+        }
     }
     
     //MARK: - DELETE THE AWARDS -
     private func deleteTheAwards(_ index: Int) {
-        self.viewModel.awards.remove(at: index)
+        withAnimation {
+            self.viewModel.awards.remove(at: index)
+        }
+    }
+    
+    //MARK: - DELETE THE TECHNICAL SKILLS -
+    private func deleteTheTechnicalSkills(_ index: Int) {
+        withAnimation {
+            self.viewModel.technicalSkills.remove(at: index)
+        }
+    }
+    
+    //MARK: - DELETE THE NON TECHNICAL SKILLS -
+    private func deleteTheNonTechnicalSkills(_ index: Int) {
+        withAnimation {
+            self.viewModel.nonTechnicalSkills.remove(at: index)
+        }
+    }
+    
+    //MARK: - DELETE THE TOOLS -
+    private func deleteTheTools(_ index: Int) {
+        withAnimation {
+            self.viewModel.tools.remove(at: index)
+        }
     }
 }
 

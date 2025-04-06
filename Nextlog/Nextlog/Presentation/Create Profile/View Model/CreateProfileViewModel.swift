@@ -21,29 +21,14 @@ extension CreateProfileView {
         @Published var education: [EducationInfoUserModel] = [EducationInfoUserModel.setIntialData()]
         @Published var certificates: [CertificateInfoUserModel] = []
         @Published var awards: [AwardsInfoUserModel] = []
+        @Published var technicalSkills: [SkillInfoUserModel] = []
+        @Published var nonTechnicalSkills: [SkillInfoUserModel] = []
+        @Published var tools: [SkillInfoUserModel] = []
     }
 }
 
 //MARK: - FUNCTIONS -
 extension CreateProfileView.ViewModel {
     
-    //MARK: = ADD PREVIOUS EXPERIENCE -
-    func addPreviousExperience() {
-        self.previousExperience.append(ExperienceInfoUserModel.setInitialData())
-    }
     
-    //MARK: - ADD EDUCATION -
-    func addEducation() {
-        self.education.append(EducationInfoUserModel.setIntialData())
-    }
-    
-    //MARK: - ADD CERTIFICATES -
-    func addCertificates() {
-        self.certificates.append(CertificateInfoUserModel.setInitialData())
-    }
-    
-    //MARK: - ADD AWARDS -
-    func addAwards() {
-        self.awards.append(AwardsInfoUserModel.setInitialData())
-    }
 }
