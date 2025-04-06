@@ -114,6 +114,9 @@ struct EmployeeDetailView: View {
                                                 index: index,
                                                 profile: profile
                                             )
+                                            .onTapGesture {
+                                                self.navigateToCreateProfile()
+                                            }
                                         }
                                     }
                                     .padding(.all, 1)
@@ -205,6 +208,12 @@ extension EmployeeDetailView {
                 self.userImage = UIImage(named: ImageEnum.icUserPlaceholder.rawValue)!
             }
         }
+    }
+    
+    //MARK: - NAVIGATE TO CREATE PROFILE -
+    private func navigateToCreateProfile() {
+        let viewModel = CreateProfileView.ViewModel()
+        self.router.push(.createProfile(viewModel))
     }
 }
 

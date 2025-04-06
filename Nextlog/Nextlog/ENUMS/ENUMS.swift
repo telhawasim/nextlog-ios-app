@@ -17,6 +17,7 @@ enum ScreenType: Hashable {
     case tabbar(TabbarView.ViewModel)
     case employeeDetails(EmployeeDetailView.ViewModel)
     case addEmployee(AddEmployeeView.ViewModel)
+    case createProfile(CreateProfileView.ViewModel)
 }
 
 enum FontSize: CGFloat {
@@ -60,4 +61,12 @@ enum TabbarType {
             return ImageEnum.icTabbarLogout.rawValue
         }
     }
+}
+
+enum CategoryType: String, CaseIterable, Hashable {
+    case info = "Info"
+    case experience = "Experience"
+    case education = "Education"
+    case skills = "Skills"
+    case projects = "Projects"
 }
