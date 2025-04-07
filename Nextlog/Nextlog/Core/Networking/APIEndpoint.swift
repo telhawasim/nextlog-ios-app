@@ -137,8 +137,8 @@ enum APIEndpoint {
                 "designation": designation,
                 "email": email,
                 "phone": phone,
-                "git": git,
-                "linkedin": linkedin,
+                "git_link": git,
+                "linked_in_link": linkedin,
                 "summary": summary
             ]
         }

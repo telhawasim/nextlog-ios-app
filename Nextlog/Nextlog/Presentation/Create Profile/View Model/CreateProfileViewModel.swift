@@ -21,12 +21,13 @@ extension CreateProfileView {
         let email: String
         let phone: String
         let designation: String
-        let desigationID: String
+        var desigationID: String
         var cancellables = Set<AnyCancellable>()
         //Published
         @Published var isLoading: Bool = false
         @Published var isShowErrorAlert: Bool = false
         @Published var errorMessage: String = ""
+        @Published var isShowDesignationPicker: Bool = false
         @Published var model: GetProfileDetailResponseModel?
         @Published var basicInfo: BasicInfoUserModel = BasicInfoUserModel.setInitialData()
         @Published var currentCompany: ExperienceInfoUserModel = ExperienceInfoUserModel.setInitialData()
@@ -141,22 +142,32 @@ extension CreateProfileView.ViewModel {
         if let basicInfo = self.model?.basicInformation {
             basicInformation = BasicInfoUserModel(
                 name: basicInfo.name ?? "",
-                designation: "SSE",
+                designation: basicInfo.designation?.name ?? "",
                 email: basicInfo.email ?? "",
-                phone: basicInfo.phone, github: <#T##String#>, linkedin: <#T##String#>, summary: <#T##String#>
+                phone: Utilities.shared.removeThePrefixFromPhoneNumber("+92", basicInfo.phone),
+                github: basicInfo.gitLink ?? "",
+                linkedin: basicInfo.linkedInLink ?? "", summary: basicInfo.summary ?? ""
+            )
+        } else {
+            basicInformation = BasicInfoUserModel(
+                name: self.name,
+                designation: self.designation,
+                email: self.email,
+                phone: self.phone,
+                github: "",
+                linkedin: "",
+                summary: ""
             )
         }
-        let basicInfo = BasicInfoUserModel(
-            name: self.name,
-            designation: self.designation,
-            email: self.email,
-            phone: self.phone,
-            github: "",
-            linkedin: "",
-            summary: ""
-        )
         
-        self.basicInfo = basicInfo
+        self.basicInfo = basicInformation
+    }
+    
+    //MARK: - SET DESIGNATION ID -
+    func setDesignationID(_ designation: String) {
+        if let designationID = AppStorage.designations?.first(where: { $0.name == designation }) {
+            self.desigationID = designationID.id ?? ""
+        }
     }
     
     //MARK: - SHOW ERROR ALERT -

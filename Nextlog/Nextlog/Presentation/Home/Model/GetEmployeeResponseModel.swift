@@ -27,7 +27,7 @@ struct EmployeeListRowResponse: Codable {
     var avatar: String?
 }
 
-struct DesignationModel: Codable {
+struct DesignationModel: Codable, Hashable {
     var id: String?
     var name: String?
 }

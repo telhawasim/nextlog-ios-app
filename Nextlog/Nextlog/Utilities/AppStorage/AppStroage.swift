@@ -9,4 +9,6 @@ struct AppStorage {
     
     @AppStorageWrapper(key: "userModel") static var user: LoginUserResponse?
     @AppStorageWrapper(key: "access_token") static var accessToken: String?
+    @AppStorageWrapper(key: "desginations") static var designations: [DesignationModel]?
+    @AppStorageWrapper(key: "departments") static var departments: [DesignationModel]?
 }

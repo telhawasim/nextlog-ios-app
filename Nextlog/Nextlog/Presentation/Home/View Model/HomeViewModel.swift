@@ -28,6 +28,8 @@ extension HomeView {
         override init() {
             super.init()
             self.getAllEmployees()
+            self.getDesignations()
+            self.getDepartments()
         }
     }
 }
@@ -47,6 +49,38 @@ extension HomeView.ViewModel {
                 }
             } receiveValue: { response in
                 self.model = response
+            }
+            .store(in: &self.cancellables)
+    }
+    
+    //MARK: - GET DESIGNATIONS -
+    private func getDesignations() {
+        NetworkManager.shared.request(endPoint: APIEndpoint.getDesignations, responseType: GetDesignationsResponseModel.self)
+            .sink { result in
+                switch result {
+                case .failure(let error):
+                    self.handleError(error)
+                case .finished:
+                    break
+                }
+            } receiveValue: { response in
+                AppStorage.designations = response.designations
+            }
+            .store(in: &self.cancellables)
+    }
+    
+    //MARK: - GET DEPARTMENTS -
+    private func getDepartments() {
+        NetworkManager.shared.request(endPoint: APIEndpoint.getDepartments, responseType: GetDesignationsResponseModel.self)
+            .sink { result in
+                switch result {
+                case .failure(let error):
+                    self.handleError(error)
+                case .finished:
+                    break
+                }
+            } receiveValue: { response in
+                AppStorage.departments = response.departments
             }
             .store(in: &self.cancellables)
     }

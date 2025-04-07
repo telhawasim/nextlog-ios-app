@@ -54,6 +54,7 @@ struct DesignationPickerView: View {
                 Picker("", selection: self.$selectedValue) {
                     ForEach(self.values, id: \.id) { value in
                         Text(value.name ?? "")
+                            .tag(value.name ?? "")
                     }
                 }
                 .frame(maxWidth: .infinity)
