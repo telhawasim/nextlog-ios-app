@@ -74,4 +74,23 @@ class Utilities {
         router.reset()
         router.push(.login(LoginView.ViewModel()))
     }
+    
+    //MARK: - VERIFY URL -
+    func verifyURL(_ urlString: String?) -> Bool {
+        if let urlString = urlString {
+            if let url = NSURL(string: urlString) {
+                return UIApplication.shared.canOpenURL(url as URL)
+            }
+        }
+        return false
+    }
+    
+    //MARK: - REMOVE THE PREFIX FROM THE PHONE NUMBER -
+    func removeThePrefixFromPhoneNumber(_ prefix: String, _ phone: String?) -> String {
+        guard let phone = phone, phone.hasPrefix(prefix) else {
+            return ""
+        }
+        
+        return String(phone.dropFirst(prefix.count))
+    }
 }

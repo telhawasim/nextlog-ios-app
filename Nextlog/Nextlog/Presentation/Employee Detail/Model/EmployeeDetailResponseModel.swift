@@ -14,14 +14,14 @@ struct GetEmployeeDetailResponse: Codable {
 
 //MARK: - EmployeeDetailModel -
 struct EmployeeDetailModel: Codable {
-    var id, name, email: String?
+    var id, name, email, phone: String?
     var empID: Int?
     var designation, department: DesignationModel?
     var avatar, createdAt: String?
     var profiles: [EmployeeDetailProfileResponse]?
 
     enum CodingKeys: String, CodingKey {
-        case id, name, email
+        case id, name, email, phone
         case empID = "emp_id"
         case designation, department, avatar
         case createdAt = "created_at"

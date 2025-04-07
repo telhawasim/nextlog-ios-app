@@ -35,6 +35,7 @@ struct CreateProfilePopUpView: View {
                     // Icon
                     Image(ImageEnum.icProfileName.rawValue)
                         .resizable()
+                        .aspectRatio(contentMode: .fit)
                         .frame(width: 67, height: 67)
                     // Description
                     Text("What would you like to name this profile?")

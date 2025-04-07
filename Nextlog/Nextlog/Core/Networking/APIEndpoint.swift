@@ -23,7 +23,9 @@ enum APIEndpoint {
     // DEPARTMENT
     case getDepartments
     // PROFILE
+    case getProfileDetail(id: String)
     case addProfile(id: String, name: String)
+    case addBasicInformation(id: String, name: String, designation: String, email: String, phone: String, git: String? = nil, linkedin: String? = nil, summary: String)
     
     //MARK: - URL -
     var url: String {
@@ -42,8 +44,12 @@ enum APIEndpoint {
             return APIEndpoint.baseURL + "designation/all"
         case .getDepartments:
             return APIEndpoint.baseURL + "department/all"
+        case .getProfileDetail(let id):
+            return APIEndpoint.baseURL + "profile/detail/\(id)"
         case .addProfile:
             return APIEndpoint.baseURL + "profile/add"
+        case .addBasicInformation(let id, _, _, _, _, _, _, _):
+            return APIEndpoint.baseURL + "profile/\(id)/basic-information"
         }
     }
     
@@ -64,8 +70,12 @@ enum APIEndpoint {
             return .get
         case .getDepartments:
             return .get
+        case .getProfileDetail:
+            return .get
         case .addProfile:
             return .post
+        case .addBasicInformation:
+            return .put
         }
     }
     
@@ -114,10 +124,22 @@ enum APIEndpoint {
             return nil
         case .getDepartments:
             return nil
+        case .getProfileDetail:
+            return nil
         case .addProfile(let id, let name):
             return [
                 "id": id,
                 "name": name
+            ]
+        case .addBasicInformation(_ , let name, let designation, let email, let phone, let git, let linkedin, let summary):
+            return [
+                "name": name,
+                "designation": designation,
+                "email": email,
+                "phone": phone,
+                "git": git,
+                "linkedin": linkedin,
+                "summary": summary
             ]
         }
     }

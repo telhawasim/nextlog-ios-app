@@ -115,7 +115,7 @@ struct EmployeeDetailView: View {
                                                 profile: profile
                                             )
                                             .onTapGesture {
-                                                self.navigateToCreateProfile()
+                                                self.navigateToCreateProfile(index: index)
                                             }
                                         }
                                     }
@@ -210,9 +210,25 @@ extension EmployeeDetailView {
         }
     }
     
+    //MARK: - SET REQUIRED PHONE NUMBER -
+    private func setRequiredPhoneNumber() -> String {
+        guard let phone = self.viewModel.model?.phone, phone.hasPrefix("+92") else {
+            return ""
+        }
+        
+        return String(phone.dropFirst(3))
+    }
+    
     //MARK: - NAVIGATE TO CREATE PROFILE -
-    private func navigateToCreateProfile() {
-        let viewModel = CreateProfileView.ViewModel()
+    private func navigateToCreateProfile(index: Int) {
+        let viewModel = CreateProfileView.ViewModel(
+            profileID: self.viewModel.model?.profiles?[index].id ?? "",
+            name: self.viewModel.model?.name ?? "",
+            email: self.viewModel.model?.email ?? "",
+            phone: Utilities.shared.removeThePrefixFromPhoneNumber("+92", self.viewModel.model?.phone),
+            designation: self.viewModel.model?.designation?.name ?? "",
+            designationID: self.viewModel.model?.designation?.id ?? ""
+        )
         self.router.push(.createProfile(viewModel))
     }
 }

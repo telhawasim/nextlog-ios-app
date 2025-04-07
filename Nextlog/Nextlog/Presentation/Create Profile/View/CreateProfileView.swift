@@ -16,7 +16,7 @@ struct CreateProfileView: View {
     //StateObject
     @StateObject var viewModel: CreateProfileView.ViewModel
     //State
-    @State var selectedCategory: CategoryType = .skills
+    @State var selectedCategory: CategoryType = .info
     @State var currentCompany: String = ""
     
     //MARK: - VIEWS -
@@ -32,7 +32,7 @@ struct CreateProfileView: View {
                 Spacer()
                 // Back Button
                 Button(action: {
-                    
+                    self.router.pop()
                 }, label: {
                     Image(ImageEnum.icCross.rawValue)
                         .resizable()
@@ -435,6 +435,9 @@ struct CreateProfileView: View {
         .padding(.horizontal, 16)
         .padding(.vertical, 20)
         .animation(.default, value: self.selectedCategory)
+        .alert(isPresented: self.$viewModel.isShowErrorAlert) {
+            Alert(title: Text("Error"), message: Text(self.viewModel.errorMessage))
+        }
     }
 }
 
@@ -461,7 +464,13 @@ extension CreateProfileView {
     private func saveButtonAction() {
         switch self.selectedCategory {
         case .info:
-            self.selectedCategory = .experience
+            if (self.viewModel.validationForBasicInformation()) {
+                self.viewModel.addBasicInformation { (isSuccess) in
+                    if (isSuccess) {
+                        self.selectedCategory = .experience
+                    }
+                }
+            }
         case .experience:
             self.selectedCategory = .education
         case .education:
@@ -629,49 +638,49 @@ extension CreateProfileView {
     
     //MARK: - DELETE THE EXPERIENCE -
     private func deleteTheExperience(_ index: Int) {
-        withAnimation {
+        _ = withAnimation {
             self.viewModel.previousExperience.remove(at: index)
         }
     }
     
     //MARK: - DELETE THE EDUCATION -
     private func deleteTheEducation(_ index: Int) {
-        withAnimation {
+        _ = withAnimation {
             self.viewModel.education.remove(at: index)
         }
     }
     
     //MARK: - DELETE THE CERTIFICATES -
     private func deleteTheCertificates(_ index: Int) {
-        withAnimation {
+        _ = withAnimation {
             self.viewModel.certificates.remove(at: index)
         }
     }
     
     //MARK: - DELETE THE AWARDS -
     private func deleteTheAwards(_ index: Int) {
-        withAnimation {
+        _ = withAnimation {
             self.viewModel.awards.remove(at: index)
         }
     }
     
     //MARK: - DELETE THE TECHNICAL SKILLS -
     private func deleteTheTechnicalSkills(_ index: Int) {
-        withAnimation {
+        _ = withAnimation {
             self.viewModel.technicalSkills.remove(at: index)
         }
     }
     
     //MARK: - DELETE THE NON TECHNICAL SKILLS -
     private func deleteTheNonTechnicalSkills(_ index: Int) {
-        withAnimation {
+        _ = withAnimation {
             self.viewModel.nonTechnicalSkills.remove(at: index)
         }
     }
     
     //MARK: - DELETE THE TOOLS -
     private func deleteTheTools(_ index: Int) {
-        withAnimation {
+        _ = withAnimation {
             self.viewModel.tools.remove(at: index)
         }
     }
@@ -679,6 +688,8 @@ extension CreateProfileView {
 
 #Preview {
     CreateProfileView(
-        viewModel: CreateProfileView.ViewModel()
+        viewModel: CreateProfileView.ViewModel(
+            profileID: "", name: "", email: "", phone: "", designation: "", designationID: ""
+        )
     )
 }
