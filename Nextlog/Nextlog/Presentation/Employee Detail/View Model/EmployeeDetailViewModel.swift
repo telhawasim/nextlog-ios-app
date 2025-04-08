@@ -27,6 +27,9 @@ extension EmployeeDetailView {
         @Published var isShowErrorAlert: Bool = false
         @Published var errorMessage: String = ""
         @Published var isUnauthorized: Bool = false
+        @Published var isShowOptionSheet: Bool = false
+        @Published var sheetHeight: CGFloat = .zero
+        @Published var selectedIndex: Int = -1
         
         //MARK: - INITIALZER -
         init(employeeId: String) {
@@ -90,21 +93,51 @@ extension EmployeeDetailView.ViewModel {
     func addProfileAPI() {
         self.isLoading = true
         
-        NetworkManager.shared.request(endPoint: APIEndpoint.addProfile(id: self.employeeId, name: self.profileName), responseType: AddProfileResponseModel.self)
+        let params = AddProfileRequestModel(
+            id: self.employeeId,
+            name: self.profileName
+        )
+        
+        NetworkManager.shared.request(
+            endPoint: APIEndpoint.addProfile,
+            responseType: AddProfileResponseModel.self,
+            encodableParameters: params
+        )
+        .sink { result in
+            self.isLoading = false
+            
+            switch result {
+            case .failure(let error):
+                self.handleError(error)
+            case .finished:
+                break
+            }
+        } receiveValue: { _ in
+            self.isLoading = false
+            
+            self.profileName = ""
+            self.isShowProfilePopup = false
+            self.fetchEmployeeDetails(id: self.employeeId)
+        }
+        .store(in: &self.cancellables)
+    }
+    
+    //MARK: - DELETE PROFILE API -
+    func deleteProfileAPI(id: String) {
+        self.isLoading = true
+        
+        NetworkManager.shared.request(endPoint: APIEndpoint.deleteProfile(id: id), responseType: DeleteProfileResponseModel.self)
             .sink { result in
                 self.isLoading = false
                 
                 switch result {
                 case .failure(let error):
-                    self.handleError(error)
+                    print(error)
                 case .finished:
                     break
                 }
             } receiveValue: { _ in
-                self.isLoading = false
-                
-                self.profileName = ""
-                self.isShowProfilePopup = false
+                self.isShowOptionSheet = false
                 self.fetchEmployeeDetails(id: self.employeeId)
             }
             .store(in: &self.cancellables)

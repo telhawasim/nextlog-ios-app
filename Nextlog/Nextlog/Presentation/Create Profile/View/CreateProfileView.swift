@@ -17,7 +17,6 @@ struct CreateProfileView: View {
     @StateObject var viewModel: CreateProfileView.ViewModel
     //State
     @State var selectedCategory: CategoryType = .info
-    @State var currentCompany: String = ""
     
     //MARK: - VIEWS -
     var body: some View {
@@ -124,8 +123,16 @@ struct CreateProfileView: View {
                                 )
                                 // Current Experience
                                 CreateProfileExperienceView(
-                                    experience: self.$viewModel.currentCompany,
-                                    isCurrentExperience: true, index: 0
+                                    experience: self.$viewModel.currentExperience,
+                                    isCurrentExperience: true,
+                                    selectedStartDate: self.viewModel.currentExperience.startDate,
+                                    selectedEndDate: self.viewModel.currentExperience.endDate,
+                                    onPressStartDate: {
+                                        self.viewModel.showStartDatePicker(for: nil)
+                                    },
+                                    onPressEndDate: {
+                                        self.viewModel.showEndDatePicker(for: nil)
+                                    }
                                 )
                                 .padding(.top, 20)
                                 // Previous Experience Header
@@ -149,8 +156,16 @@ struct CreateProfileView: View {
                                             CreateProfileExperienceView(
                                                 experience: self.$viewModel.previousExperience[index],
                                                 index: index,
+                                                selectedStartDate: self.viewModel.previousExperience[index].startDate,
+                                                selectedEndDate: self.viewModel.previousExperience[index].endDate,
                                                 onPressDelete: {
                                                     self.deleteTheExperience(index)
+                                                },
+                                                onPressStartDate: {
+                                                    self.viewModel.showStartDatePicker(for: index)
+                                                },
+                                                onPressEndDate: {
+                                                    self.viewModel.showEndDatePicker(for: index)
                                                 }
                                             )
                                             .id("education_\(index)")
@@ -403,8 +418,14 @@ struct CreateProfileView: View {
                             }
                         }
                         .padding(.top, 20)
+                        .id("top")
                     }
                     .padding(.top, 10)
+                    .onChange(of: self.selectedCategory) { _, _ in
+                        withAnimation {
+                            proxy.scrollTo("top", anchor: .top)
+                        }
+                    }
                 }
                 // Buttons
                 HStack(spacing: 15) {
@@ -444,6 +465,62 @@ struct CreateProfileView: View {
                     self.viewModel.setDesignationID(designation)
                     self.viewModel.basicInfo.designation = designation
                 }
+            )
+            // State Date Picker
+            DatePickerView(
+                isShowDatePicker: self.$viewModel.isShowStartDatePicker,
+                selectedValue: Binding<String>(
+                    get: {
+                        if let index = self.viewModel.selectedExperienceIndex,
+                           self.viewModel.previousExperience.indices.contains(index) {
+                            return self.viewModel.previousExperience[index].startDate
+                        } else {
+                            return self.viewModel.currentExperience.startDate
+                        }
+                    },
+                    set: { newDate in
+                        if let index = self.viewModel.selectedExperienceIndex,
+                           self.viewModel.previousExperience.indices.contains(index) {
+                            self.viewModel.previousExperience[index].startDate = newDate
+                        } else {
+                            self.viewModel.currentExperience.startDate = newDate
+                        }
+                    }
+                ),
+                selectedDate: self.$viewModel.selectedStartDate,
+                onPressDone: {
+                    self.viewModel.selectedEndDate = Date()
+                    if let index = self.viewModel.selectedExperienceIndex,
+                       self.viewModel.previousExperience.indices.contains(index) {
+                        self.viewModel.previousExperience[index].endDate = ""
+                    } else {
+                        self.viewModel.currentExperience.endDate = "Present"
+                    }
+                }
+            )
+            // End Date Picker
+            DatePickerView(
+                isShowDatePicker: self.$viewModel.isShowEndDatePicker,
+                selectedValue: Binding<String>(
+                    get: {
+                        if let index = self.viewModel.selectedExperienceIndex,
+                           self.viewModel.previousExperience.indices.contains(index) {
+                            return self.viewModel.previousExperience[index].endDate
+                        } else {
+                            return self.viewModel.currentExperience.endDate
+                        }
+                    },
+                    set: { newDate in
+                        if let index = self.viewModel.selectedExperienceIndex,
+                           self.viewModel.previousExperience.indices.contains(index) {
+                            self.viewModel.previousExperience[index].endDate = newDate
+                        } else {
+                            self.viewModel.currentExperience.endDate = newDate
+                        }
+                    }
+                ),
+                selectedDate: self.$viewModel.selectedEndDate,
+                minimuDate: self.viewModel.selectedStartDate
             )
         }
         .animation(.default, value: self.selectedCategory)
@@ -652,6 +729,13 @@ extension CreateProfileView {
     private func deleteTheExperience(_ index: Int) {
         _ = withAnimation {
             self.viewModel.previousExperience.remove(at: index)
+        }
+        
+        if let selected = self.viewModel.selectedExperienceIndex,
+           selected == index || selected >= self.viewModel.previousExperience.count {
+            self.viewModel.selectedExperienceIndex = nil
+            self.viewModel.isShowStartDatePicker = false
+            self.viewModel.isShowEndDatePicker = false
         }
     }
     

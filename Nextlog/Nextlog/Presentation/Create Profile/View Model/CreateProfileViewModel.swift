@@ -24,14 +24,27 @@ extension CreateProfileView {
         var desigationID: String
         var cancellables = Set<AnyCancellable>()
         //Published
+        
+        //Info
+        @Published var isShowDesignationPicker: Bool = false
+        @Published var basicInfo: BasicInfoUserModel = BasicInfoUserModel.setInitialData()
+        //Experience
+        @Published var isShowStartDatePicker: Bool = false // For Start Date Picker
+        @Published var isShowEndDatePicker: Bool = false // For End Date Picker
+        @Published var selectedStartDate: Date = Date()
+        @Published var selectedEndDate: Date = Date()
+        @Published var selectedExperienceIndex: Int? = nil // For Previous Experience
+        @Published var currentExperience: ExperienceInfoUserModel = ExperienceInfoUserModel.setInitialDataForCurrentExperience()
+        @Published var previousExperience: [ExperienceInfoUserModel] = []
+        
+        
         @Published var isLoading: Bool = false
         @Published var isShowErrorAlert: Bool = false
         @Published var errorMessage: String = ""
-        @Published var isShowDesignationPicker: Bool = false
+        
         @Published var model: GetProfileDetailResponseModel?
-        @Published var basicInfo: BasicInfoUserModel = BasicInfoUserModel.setInitialData()
-        @Published var currentCompany: ExperienceInfoUserModel = ExperienceInfoUserModel.setInitialData()
-        @Published var previousExperience: [ExperienceInfoUserModel] = []
+        
+        
         @Published var education: [EducationInfoUserModel] = [EducationInfoUserModel.setIntialData()]
         @Published var certificates: [CertificateInfoUserModel] = []
         @Published var awards: [AwardsInfoUserModel] = []
@@ -109,6 +122,40 @@ extension CreateProfileView.ViewModel {
             .store(in: &self.cancellables)
     }
     
+    //MARK: - ADD EXPERIENCE API -
+    func addExperienceAPI(completion: @escaping (Bool) -> Void) {
+        self.isLoading = true
+        
+        let currentExperience = self.mapToAddExperience(from: currentExperience, designation: "Senior iOS Developer")
+        let previousExperience = self.previousExperience.map {
+            self.mapToAddExperience(from: $0, designation: "Junior iOS Developer")
+        }
+        let params = AddExperienceRequest(
+            current_experience: currentExperience,
+            previous_experience: previousExperience
+        )
+        
+        NetworkManager.shared.request(
+            endPoint: APIEndpoint.addExperience(id: self.profileID),
+            responseType: AddInfomationResponseModel.self,
+            encodableParameters: params
+        )
+        .sink { result in
+            self.isLoading = false
+            
+            switch result {
+            case .failure(let error):
+                print(error)
+                completion(false)
+            case .finished:
+                break
+            }
+        } receiveValue: { _ in
+            completion(true)
+        }
+        .store(in: &self.cancellables)
+    }
+    
     //MARK: - VALIDATION FOR BASIC INFORMATION -
     func validationForBasicInformation() -> Bool {
         var errorMessage: String?
@@ -168,6 +215,29 @@ extension CreateProfileView.ViewModel {
         if let designationID = AppStorage.designations?.first(where: { $0.name == designation }) {
             self.desigationID = designationID.id ?? ""
         }
+    }
+    
+    //MARK: - SHOW START DATE PICKER -
+    func showStartDatePicker(for index: Int?) {
+        self.selectedExperienceIndex = index
+        self.isShowStartDatePicker = true
+    }
+    
+    //MARK: - SHOW END DATE PICKER -
+    func showEndDatePicker(for index: Int?) {
+        self.selectedExperienceIndex = index
+        self.isShowEndDatePicker = true
+    }
+    
+    //MARK: - MAP TO ADD EXPERIENCE -
+    private func mapToAddExperience(from model: ExperienceInfoUserModel, designation: String) -> AddExperience {
+        return AddExperience(
+            company: model.companyName,
+            designation: designation,
+            start_date: model.startDate,
+            end_date: model.endDate,
+            description: model.description
+        )
     }
     
     //MARK: - SHOW ERROR ALERT -

@@ -14,6 +14,7 @@ struct EmployeeDetailCVListView: View {
     //Normal
     var index: Int
     var profile: EmployeeDetailProfileResponse
+    var onPressOption: (() -> Void)?
     
     //MARK: - VIEWS -
     var body: some View {
@@ -48,7 +49,7 @@ struct EmployeeDetailCVListView: View {
             Spacer()
             // Options Button
             Button(action: {
-                
+                self.onPressOption?()
             }, label: {
                 Image(ImageEnum.icOptions.rawValue)
                     .resizable()

@@ -13,6 +13,8 @@ struct DatePickerView: View {
     @Binding var isShowDatePicker: Bool
     @Binding var selectedValue: String
     @Binding var selectedDate: Date
+    var minimuDate: Date? = nil
+    var onPressDone: (() -> Void)?
     
     //MARK: - VIEWS -
     var body: some View {
@@ -35,6 +37,7 @@ struct DatePickerView: View {
                     Button(action:  {
                         self.selectedValue = Utilities.shared.formatDateIntoString(self.selectedDate)
                         self.isShowDatePicker = false
+                        self.onPressDone?()
                     }, label: {
                         Text("Done")
                             .font(.getSemibold(.h20))
@@ -46,7 +49,7 @@ struct DatePickerView: View {
                 // Divider
                 Divider()
                 // Date Picker
-                DatePicker("", selection: self.$selectedDate, in: ...Date.now, displayedComponents: .date)
+                DatePicker("", selection: self.$selectedDate, in: self.handleRange(), displayedComponents: .date)
                     .labelsHidden()
                     .datePickerStyle(.wheel)
                     .frame(maxWidth: .infinity)
@@ -54,6 +57,19 @@ struct DatePickerView: View {
             }
             .offset(y: self.isShowDatePicker ? 0 : 400)
             .animation(.default, value: self.isShowDatePicker)
+        }
+    }
+}
+
+//MARK: - FUNCTIONS -
+extension DatePickerView {
+    
+    //MARK: - HANDLE RANGE -
+    private func handleRange() -> ClosedRange<Date> {
+        if let minDate = self.minimuDate {
+            return minDate...Date()
+        } else {
+            return Date.distantPast...Date()
         }
     }
 }

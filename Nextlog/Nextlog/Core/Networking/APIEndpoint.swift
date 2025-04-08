@@ -12,7 +12,7 @@ enum APIEndpoint {
     private static let baseURL = "http://127.0.0.1:8000/"
     
     // AUTHENTICATION
-    case login(email: String, password: String? = "", emp_id: Int? = 0, role: String)
+    case login
     // EMPLOYEE
     case getEmployees(page: Int = 1, limit: Int = 10)
     case getEmployeeDetails(id: String)
@@ -24,8 +24,10 @@ enum APIEndpoint {
     case getDepartments
     // PROFILE
     case getProfileDetail(id: String)
-    case addProfile(id: String, name: String)
+    case addProfile
+    case deleteProfile(id: String)
     case addBasicInformation(id: String, name: String, designation: String, email: String, phone: String, git: String? = nil, linkedin: String? = nil, summary: String)
+    case addExperience(id: String)
     
     //MARK: - URL -
     var url: String {
@@ -48,8 +50,12 @@ enum APIEndpoint {
             return APIEndpoint.baseURL + "profile/detail/\(id)"
         case .addProfile:
             return APIEndpoint.baseURL + "profile/add"
+        case .deleteProfile(let id):
+            return APIEndpoint.baseURL + "profile/delete/\(id)"
         case .addBasicInformation(let id, _, _, _, _, _, _, _):
             return APIEndpoint.baseURL + "profile/\(id)/basic-information"
+        case .addExperience(let id):
+            return APIEndpoint.baseURL + "profile/\(id)/experience"
         }
     }
     
@@ -74,7 +80,11 @@ enum APIEndpoint {
             return .get
         case .addProfile:
             return .post
+        case .deleteProfile:
+            return .delete
         case .addBasicInformation:
+            return .put
+        case .addExperience:
             return .put
         }
     }
@@ -98,20 +108,8 @@ enum APIEndpoint {
     //MARK: - PARAMETERS -
     var parameters: Parameters? {
         switch self {
-        case .login(let email, let password, let emp_id, let role):
-            if role == "admin" {
-                return [
-                    "email": email,
-                    "password": password ?? "",
-                    "role": role
-                ]
-            } else {
-                return [
-                    "email": email,
-                    "emp_id": emp_id ?? 0,
-                    "role": role
-                ]
-            }
+        case .login:
+            return nil
         case .getEmployees:
             return nil
         case .getEmployeeDetails:
@@ -126,11 +124,10 @@ enum APIEndpoint {
             return nil
         case .getProfileDetail:
             return nil
-        case .addProfile(let id, let name):
-            return [
-                "id": id,
-                "name": name
-            ]
+        case .deleteProfile:
+            return nil
+        case .addProfile:
+            return nil
         case .addBasicInformation(_ , let name, let designation, let email, let phone, let git, let linkedin, let summary):
             return [
                 "name": name,
@@ -141,6 +138,8 @@ enum APIEndpoint {
                 "linked_in_link": linkedin,
                 "summary": summary
             ]
+        case .addExperience:
+            return nil
         }
     }
 }

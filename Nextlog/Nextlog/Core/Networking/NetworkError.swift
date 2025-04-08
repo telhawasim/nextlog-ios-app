@@ -11,6 +11,7 @@ enum NetworkError: Error {
     case invalidURL
     case noData
     case decodingError
+    case encodingError
     case unauthorized(statusCode: Int, message: String)
     case serverError(statusCode: Int, message: String)
     case unknown(String)
@@ -20,6 +21,7 @@ enum NetworkError: Error {
         case .invalidURL: return "Invalid URL"
         case .noData: return "No data received"
         case .decodingError: return "Failed to decode response"
+        case .encodingError: return "Failed to encode request"
         case .unauthorized: return "Unauthorized access"
         case .serverError(let code, let message): return "Server error with status code \(code) and message: \(message)"
         case .unknown(let message): return message

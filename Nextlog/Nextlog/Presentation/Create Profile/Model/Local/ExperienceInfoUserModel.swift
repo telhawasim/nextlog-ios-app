@@ -17,4 +17,11 @@ struct ExperienceInfoUserModel {
             companyName: "", startDate: "", endDate: "", description: ""
         )
     }
+    
+    //MARK: - SET INITIAL DATA FOR CURRENT EXPERIENCE -
+    static func setInitialDataForCurrentExperience() -> ExperienceInfoUserModel {
+        return ExperienceInfoUserModel(
+            companyName: "NextBridge", startDate: "", endDate: "Present", description: ""
+        )
+    }
 }

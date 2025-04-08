@@ -15,12 +15,14 @@ struct CreateProfileExperienceView: View {
     @Binding var experience: ExperienceInfoUserModel
     //Normal
     var isCurrentExperience: Bool = false
+    var index: Int = -1
     var selectedStartDate: String = ""
     var selectedEndDate: String = ""
-    var index: Int
     var onPressDelete: (() -> Void)?
+    var onPressStartDate: (() -> Void)?
+    var onPressEndDate: (() -> Void)?
+    //State
     @State private var designation: String = ""
-    @State private var summary: String = ""
     
     //MARK: - VIEWS -
     var body: some View {
@@ -86,17 +88,17 @@ struct CreateProfileExperienceView: View {
                         .foregroundStyle(Color.red)
                 }
                 .padding(.bottom, -7)
-                // Date Picker Button
+                // Start Date Picker Button
                 Button(action: {
-//                    self.onPress?()
+                    self.onPressStartDate?()
                 }, label: {
                     // Text and Logo
                     HStack {
                         // Text
                         Text(self.selectedStartDate == "" ? "Enter start date" : self.selectedStartDate)
-                        .font(.getRegular(.h16))
-                        .foregroundStyle(self.selectedStartDate == "" ? Color.gray.opacity(0.5) : Color.black)
-                        .padding(.bottom, -6)
+                            .font(.getRegular(.h16))
+                            .foregroundStyle(self.selectedStartDate == "" ? Color.gray.opacity(0.5) : Color.black)
+                            .padding(.bottom, -6)
                         // Spacer
                         Spacer()
                         // Logo
@@ -129,17 +131,17 @@ struct CreateProfileExperienceView: View {
                         .foregroundStyle(Color.red)
                 }
                 .padding(.bottom, -7)
-                // Date Picker Button
+                // End Date Picker Button
                 Button(action: {
-//                    self.onPress?()
+                    self.onPressEndDate?()
                 }, label: {
                     // Text and Logo
                     HStack {
                         // Text
-                        Text(self.selectedEndDate == "" ? "Enter end date" : self.selectedEndDate)
-                        .font(.getRegular(.h16))
-                        .foregroundStyle(self.selectedEndDate == "" ? Color.gray.opacity(0.5) : Color.black)
-                        .padding(.bottom, -6)
+                        Text(self.handleEndDate())
+                            .font(.getRegular(.h16))
+                            .foregroundStyle(self.selectedEndDate == "" ? Color.gray.opacity(0.5) : Color.black)
+                            .padding(.bottom, -6)
                         // Spacer
                         Spacer()
                         // Logo
@@ -160,22 +162,47 @@ struct CreateProfileExperienceView: View {
                 // Divider
                 Divider()
             }
-            // Designation TextField
-            AddEmployeeDesignationTextField(
-                value: self.$designation,
-                isDesignation: true
-            )
+            // Only show designation TextField if current experience is false
+            if !(self.isCurrentExperience) {
+                // Designation TextField
+                AddEmployeeDesignationTextField(
+                    value: self.$designation,
+                    isDesignation: true
+                )
+            }
+            // Summary TextField
             CreateProfileSummaryTextField(
-                value: self.$summary,
+                value: self.$experience.description,
                 placeholder: "Job Description / Responsibilities")
             .padding(.top, 15)
         }
     }
 }
 
+//MARK: - FUNCTIONS -
+extension CreateProfileExperienceView {
+    
+    //MARK: - HANDLE END DATE -
+    private func handleEndDate() -> String {
+        if (self.isCurrentExperience) {
+            return "Present"
+        } else {
+            return self.selectedEndDate == "" ? "Enter end date" : self.selectedEndDate
+        }
+    }
+    
+    //MARK: - HANDLE END DATE COLOR -
+    private func handleEndDateColor() -> Color {
+        if (self.isCurrentExperience) {
+            return Color.black
+        } else {
+            return self.selectedEndDate == "" ? Color.gray.opacity(0.5) : Color.black
+        }
+    }
+}
+
 #Preview {
     CreateProfileExperienceView(
-        experience: Binding.constant(ExperienceInfoUserModel(companyName: "", startDate: "", endDate: "", description: "")),
-        index: 0
+        experience: Binding.constant(ExperienceInfoUserModel(companyName: "", startDate: "", endDate: "", description: ""))
     )
 }

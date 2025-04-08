@@ -38,52 +38,72 @@ extension LoginView.ViewModel {
     func loginAsAdmin(completion: @escaping ((Bool) -> Void)) {
         self.isLoading = true
         
-        NetworkManager.shared.request(endPoint: APIEndpoint.login(email: self.email, password: self.password, role: "admin"), responseType: LoginResponseModel.self)
-            .sink { result in
-                self.isLoading = false
-                
-                switch result {
-                case .failure(let error):
-                    self.handleError(error)
-                    completion(false)
-                case .finished:
-                    break
-                }
-            } receiveValue: { response in
-                self.isLoading = false
-                
-                AppStorage.user = response.data
-                AppStorage.accessToken = response.accessToken
-                
-                completion(true)
+        let params = LoginRequestModel(
+            role: RoleType.admin.rawValue,
+            email: self.email,
+            password: self.password
+        )
+        
+        NetworkManager.shared.request(
+            endPoint: APIEndpoint.login,
+            responseType: LoginResponseModel.self,
+            encodableParameters: params
+        )
+        .sink { result in
+            self.isLoading = false
+            
+            switch result {
+            case .failure(let error):
+                self.handleError(error)
+                completion(false)
+            case .finished:
+                break
             }
-            .store(in: &self.cancellables)
+        } receiveValue: { response in
+            self.isLoading = false
+            
+            AppStorage.user = response.data
+            AppStorage.accessToken = response.accessToken
+            
+            completion(true)
+        }
+        .store(in: &self.cancellables)
     }
     
     //MARK: - LOGIN AS EMPLOYEE -
     func loginAsEmployee(completion: @escaping ((Bool) -> Void)) {
         self.isLoading = true
         
-        NetworkManager.shared.request(endPoint: APIEndpoint.login(email: self.email, emp_id: Int(self.id), role: "employee"), responseType: LoginResponseModel.self)
-            .sink { result in
-                self.isLoading = false
-                
-                switch result {
-                case .failure(let error):
-                    self.handleError(error)
-                    completion(false)
-                case .finished:
-                    break
-                }
-            } receiveValue: { response in
-                self.isLoading = false
-                
-                AppStorage.user = response.data
-                AppStorage.accessToken = response.accessToken
-                
-                completion(true)
+        let params = LoginRequestModel(
+            role: RoleType.employee.rawValue,
+            email: self.email,
+            emp_id: Int(self.id)
+        )
+        
+        NetworkManager.shared.request(
+            endPoint: APIEndpoint.login,
+            responseType: LoginResponseModel.self,
+            encodableParameters: params
+        )
+        .sink { result in
+            self.isLoading = false
+            
+            switch result {
+            case .failure(let error):
+                self.handleError(error)
+                completion(false)
+            case .finished:
+                break
             }
-            .store(in: &self.cancellables)
+        } receiveValue: { response in
+            self.isLoading = false
+            
+            AppStorage.user = response.data
+            AppStorage.accessToken = response.accessToken
+            
+            completion(true)
+        }
+        .store(in: &self.cancellables)
     }
     
     //MARK: - VALIDATION FOR LOGIN AS ADMIN -

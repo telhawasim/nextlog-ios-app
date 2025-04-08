@@ -24,15 +24,34 @@ final class NetworkManager {
     //MARK: - REQUEST -
     func request<T: Decodable>(
         endPoint: APIEndpoint,
-        responseType: T.Type
+        responseType: T.Type,
+        encodableParameters: Encodable? = nil
     ) -> AnyPublisher<T, NetworkError> {
         guard let requestURL = URL(string: endPoint.url) else {
             return Fail(error: NetworkError.invalidURL).eraseToAnyPublisher()
         }
         
         let afHeaders = endPoint.headers
+        
+        var urlRequest = URLRequest(url: requestURL)
+        urlRequest.httpMethod = endPoint.method.rawValue
+        urlRequest.allHTTPHeaderFields = afHeaders.dictionary
+        
+        if let encodable = encodableParameters {
+            do {
+                let encoder = JSONEncoder()
+                encoder.keyEncodingStrategy = .convertToSnakeCase
+                
+                let data = try encoder.encode(encodable)
+                urlRequest.httpBody = data
+                urlRequest.setValue("application/json", forHTTPHeaderField: "Content-Type")
+            } catch {
+                return Fail(error: NetworkError.encodingError)
+                    .eraseToAnyPublisher()
+            }
+        }
 
-        return session.request(requestURL, method: endPoint.method, parameters: endPoint.parameters, encoding: JSONEncoding.default, headers: afHeaders)
+        return session.request(urlRequest)
             .validate(statusCode: 200..<300)
             .publishData()
             .tryMap { response in

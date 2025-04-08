@@ -112,11 +112,12 @@ struct EmployeeDetailView: View {
                                         ForEach(Array(profiles.enumerated()), id: \.element.id) { (index, profile) in
                                             EmployeeDetailCVListView(
                                                 index: index,
-                                                profile: profile
+                                                profile: profile,
+                                                onPressOption: {
+                                                    self.viewModel.selectedIndex = index
+                                                    self.viewModel.isShowOptionSheet = true
+                                                }
                                             )
-                                            .onTapGesture {
-                                                self.navigateToCreateProfile(index: index)
-                                            }
                                         }
                                     }
                                     .padding(.all, 1)
@@ -190,6 +191,32 @@ struct EmployeeDetailView: View {
                 })
             )
         }
+        .sheet(isPresented: self.$viewModel.isShowOptionSheet) {
+            EmployeeDetailOptionsView(
+                index: self.$viewModel.selectedIndex,
+                onPressEdit: {
+                    let id = self.viewModel.model?.profiles?[self.viewModel.selectedIndex].id ?? ""
+                    self.navigateToCreateProfile(id: id)
+                    self.viewModel.isShowOptionSheet = false
+                },
+                onPressDelete: {
+                    let id = self.viewModel.model?.profiles?[self.viewModel.selectedIndex].id ?? ""
+                    self.viewModel.deleteProfileAPI(id: id)
+                }
+            )
+            .presentationDragIndicator(.visible)
+            .overlay {
+                GeometryReader { proxy in
+                    Color.clear.preference(key: InnerHeightPreferenceKey.self, value: proxy.size.height)
+                }
+            }
+            .onPreferenceChange(InnerHeightPreferenceKey.self) { newHeight in
+                self.viewModel.sheetHeight = newHeight
+            }
+            .presentationDetents([.height(self.viewModel.sheetHeight)])
+            .presentationBackground(.clear)
+            .presentationCornerRadius(30)
+        }
         .task {
             self.fetchEmployeeProfileImage()
         }
@@ -220,9 +247,9 @@ extension EmployeeDetailView {
     }
     
     //MARK: - NAVIGATE TO CREATE PROFILE -
-    private func navigateToCreateProfile(index: Int) {
+    private func navigateToCreateProfile(id: String) {
         let viewModel = CreateProfileView.ViewModel(
-            profileID: self.viewModel.model?.profiles?[index].id ?? "",
+            profileID: id,
             name: self.viewModel.model?.name ?? "",
             email: self.viewModel.model?.email ?? "",
             phone: Utilities.shared.removeThePrefixFromPhoneNumber("+92", self.viewModel.model?.phone),
