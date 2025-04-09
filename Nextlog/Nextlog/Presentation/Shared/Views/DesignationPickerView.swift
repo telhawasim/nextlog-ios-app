@@ -72,7 +72,7 @@ extension DesignationPickerView {
     
     //MARK: - SET VALUE -
     private func setValue() {
-        if (self.values.count >= 1) && (self.selectedDesignation.name == "") {
+        if (self.values.count >= 1) && (self.selectedDesignation.name == "" || self.selectedDesignation.name == nil) {
             self.selectedDesignation = self.values[0]
         } else {
             if let selectedDesignation = self.values.first(where: { $0.name == self.selectedDesignation.name }) {
