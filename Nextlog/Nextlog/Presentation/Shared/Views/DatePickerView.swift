@@ -35,7 +35,7 @@ struct DatePickerView: View {
                     Spacer()
                     // Done Button
                     Button(action:  {
-                        self.selectedValue = Utilities.shared.formatDateIntoString(self.selectedDate)
+                        self.selectedValue = Utilities.shared.formatDateIntoString(self.selectedDate, formate: .dd_MMM_yyyy)
                         self.isShowDatePicker = false
                         self.onPressDone?()
                     }, label: {

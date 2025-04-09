@@ -40,6 +40,8 @@ struct SplashView: View {
                         AddEmployeeView(viewModel: viewModel)
                     case .createProfile(let viewModel):
                         CreateProfileView(viewModel: viewModel)
+                    case .profileDetail(let viewModel):
+                        ProfileDetailView(viewModel: viewModel)
                     }
                 }
                 .navigationBarBackButtonHidden(true)

@@ -118,6 +118,10 @@ struct EmployeeDetailView: View {
                                                     self.viewModel.isShowOptionSheet = true
                                                 }
                                             )
+                                            .onTapGesture {
+                                                let id = self.viewModel.model?.profiles?[index].id ?? ""
+                                                self.navigateToProfileDetail(id: id)
+                                            }
                                         }
                                     }
                                     .padding(.all, 1)
@@ -257,6 +261,14 @@ extension EmployeeDetailView {
             designationID: self.viewModel.model?.designation?.id ?? ""
         )
         self.router.push(.createProfile(viewModel))
+    }
+    
+    //MARK: - NAVIGATE TO PROFILE DETAIL -
+    private func navigateToProfileDetail(id: String) {
+        let viewModel = ProfileDetailView.ViewModel(
+            profileID: id
+        )
+        self.router.push(.profileDetail(viewModel))
     }
 }
 

@@ -36,6 +36,7 @@ final class NetworkManager {
         var urlRequest = URLRequest(url: requestURL)
         urlRequest.httpMethod = endPoint.method.rawValue
         urlRequest.allHTTPHeaderFields = afHeaders.dictionary
+        print(AppStorage.accessToken ?? "")
         
         if let encodable = encodableParameters {
             do {

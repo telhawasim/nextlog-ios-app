@@ -166,6 +166,9 @@ struct CreateProfileView: View {
                                                 },
                                                 onPressEndDate: {
                                                     self.viewModel.showEndDatePicker(for: index)
+                                                },
+                                                onPressDesignation: {
+                                                    self.viewModel.showExperienceDesignation(for: index)
                                                 }
                                             )
                                             .id("education_\(index)")
@@ -462,8 +465,8 @@ struct CreateProfileView: View {
                 isShowPicker: self.$viewModel.isShowDesignationPicker,
                 values: AppStorage.designations ?? [],
                 onPress: { designation in
-                    self.viewModel.setDesignationID(designation)
-                    self.viewModel.basicInfo.designation = designation
+                    self.viewModel.desigationID = designation.id ?? ""
+                    self.viewModel.basicInfo.designation = designation.name ?? ""
                 }
             )
             // State Date Picker
@@ -522,6 +525,17 @@ struct CreateProfileView: View {
                 selectedDate: self.$viewModel.selectedEndDate,
                 minimuDate: self.viewModel.selectedStartDate
             )
+            // Designation Picker
+            DesignationPickerView(
+                isShowPicker: self.$viewModel.isShowExperienceDesignationPicker,
+                values: AppStorage.designations ?? [],
+                onPress: { designation in
+                    if let index = self.viewModel.selectedExperienceIndex {
+                        self.viewModel.previousExperience[index].designationID = designation.id ?? ""
+                        self.viewModel.previousExperience[index].designationName = designation.name ?? ""
+                    }
+                }
+            )
         }
         .animation(.default, value: self.selectedCategory)
         .alert(isPresented: self.$viewModel.isShowErrorAlert) {
@@ -561,7 +575,13 @@ extension CreateProfileView {
                 }
             }
         case .experience:
-            self.selectedCategory = .education
+            if (self.viewModel.validationForExperience()) {
+                self.viewModel.addExperienceAPI { (isSuccess) in
+                    if (isSuccess) {
+                        self.selectedCategory = .education
+                    }
+                }
+            }
         case .education:
             self.selectedCategory = .skills
         case .skills:

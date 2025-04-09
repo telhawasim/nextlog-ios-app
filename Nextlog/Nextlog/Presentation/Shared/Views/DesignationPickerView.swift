@@ -12,12 +12,12 @@ struct DesignationPickerView: View {
     //MARK: - PROPERTIES -
     
     //State
-    @State var selectedValue: String = ""
+    @State var selectedDesignation: DesignationModel = DesignationModel()
     //Binding
     @Binding var isShowPicker: Bool
     //Normal
     var values: [DesignationModel] = []
-    var onPress: ((String) -> Void)?
+    var onPress: ((DesignationModel) -> Void)?
     
     //MARK: - VIEWS -
     var body: some View {
@@ -39,7 +39,7 @@ struct DesignationPickerView: View {
                     Button(action:  {
                         self.isShowPicker = false
                         self.setValue()
-                        self.onPress?(self.selectedValue)
+                        self.onPress?(self.selectedDesignation)
                     }, label: {
                         Text("Done")
                             .font(.getSemibold(.h20))
@@ -51,7 +51,7 @@ struct DesignationPickerView: View {
                 // Divider
                 Divider()
                 // Date Picker
-                Picker("", selection: self.$selectedValue) {
+                Picker("", selection: self.$selectedDesignation.name) {
                     ForEach(self.values, id: \.id) { value in
                         Text(value.name ?? "")
                             .tag(value.name ?? "")
@@ -72,8 +72,12 @@ extension DesignationPickerView {
     
     //MARK: - SET VALUE -
     private func setValue() {
-        if (self.values.count >= 1) && (self.selectedValue == "") {
-            self.selectedValue = self.values[0].name ?? ""
+        if (self.values.count >= 1) && (self.selectedDesignation.name == "") {
+            self.selectedDesignation = self.values[0]
+        } else {
+            if let selectedDesignation = self.values.first(where: { $0.name == self.selectedDesignation.name }) {
+                self.selectedDesignation = selectedDesignation
+            }
         }
     }
 }

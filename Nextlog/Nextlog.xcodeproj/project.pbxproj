@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		096D089D2DA65BA40099653E /* ExpandableText in Frameworks */ = {isa = PBXBuildFile; productRef = 096D089C2DA65BA40099653E /* ExpandableText */; };
 		09F2AE722D968DB8007C46EA /* Alamofire in Frameworks */ = {isa = PBXBuildFile; productRef = 09F2AE712D968DB8007C46EA /* Alamofire */; };
 /* End PBXBuildFile section */
 
@@ -42,6 +43,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				09F2AE722D968DB8007C46EA /* Alamofire in Frameworks */,
+				096D089D2DA65BA40099653E /* ExpandableText in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -85,6 +87,7 @@
 			name = Nextlog;
 			packageProductDependencies = (
 				09F2AE712D968DB8007C46EA /* Alamofire */,
+				096D089C2DA65BA40099653E /* ExpandableText */,
 			);
 			productName = Nextlog;
 			productReference = 09C1AEE92D8B2BF1009D0C51 /* Nextlog.app */;
@@ -116,6 +119,7 @@
 			minimizedProjectReferenceProxies = 1;
 			packageReferences = (
 				09F2AE702D968DB8007C46EA /* XCRemoteSwiftPackageReference "Alamofire" */,
+				096D089B2DA65BA40099653E /* XCRemoteSwiftPackageReference "ExpandableText" */,
 			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = 09C1AEEA2D8B2BF1009D0C51 /* Products */;
@@ -353,6 +357,14 @@
 /* End XCConfigurationList section */
 
 /* Begin XCRemoteSwiftPackageReference section */
+		096D089B2DA65BA40099653E /* XCRemoteSwiftPackageReference "ExpandableText" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/n3d1117/ExpandableText.git";
+			requirement = {
+				branch = main;
+				kind = branch;
+			};
+		};
 		09F2AE702D968DB8007C46EA /* XCRemoteSwiftPackageReference "Alamofire" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/Alamofire/Alamofire.git";
@@ -364,6 +376,11 @@
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
+		096D089C2DA65BA40099653E /* ExpandableText */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 096D089B2DA65BA40099653E /* XCRemoteSwiftPackageReference "ExpandableText" */;
+			productName = ExpandableText;
+		};
 		09F2AE712D968DB8007C46EA /* Alamofire */ = {
 			isa = XCSwiftPackageProductDependency;
 			package = 09F2AE702D968DB8007C46EA /* XCRemoteSwiftPackageReference "Alamofire" */;

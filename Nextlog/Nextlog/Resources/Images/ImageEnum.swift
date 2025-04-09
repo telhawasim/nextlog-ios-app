@@ -31,4 +31,8 @@ enum ImageEnum: String {
     case icOptions = "ic_options"
     case icAddSection = "ic_add_section"
     case icEditProfile = "ic_edit_profile"
+    case icEmail = "ic_email"
+    case icGitLink = "ic_git_link"
+    case icLinkedIn = "ic_linkedIn"
+    case icPhone = "ic_phone"
 }

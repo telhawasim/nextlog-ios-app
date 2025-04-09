@@ -31,12 +31,13 @@ extension CreateProfileView {
         //Experience
         @Published var isShowStartDatePicker: Bool = false // For Start Date Picker
         @Published var isShowEndDatePicker: Bool = false // For End Date Picker
+        @Published var isShowExperienceDesignationPicker: Bool = false
         @Published var selectedStartDate: Date = Date()
         @Published var selectedEndDate: Date = Date()
         @Published var selectedExperienceIndex: Int? = nil // For Previous Experience
         @Published var currentExperience: ExperienceInfoUserModel = ExperienceInfoUserModel.setInitialDataForCurrentExperience()
         @Published var previousExperience: [ExperienceInfoUserModel] = []
-        
+        @Published var currentExperienceDesignation: DesignationModel
         
         @Published var isLoading: Bool = false
         @Published var isShowErrorAlert: Bool = false
@@ -60,7 +61,7 @@ extension CreateProfileView {
             self.phone = phone
             self.designation = designation
             self.desigationID = designationID
-            
+            self.currentExperienceDesignation = DesignationModel(id: self.desigationID, name: self.designation)
             super.init()
             self.getProfileDetail()
         }
@@ -87,6 +88,7 @@ extension CreateProfileView.ViewModel {
             } receiveValue: { response in
                 self.model = response
                 self.setBasicInfo()
+                self.setExperience()
             }
             .store(in: &self.cancellables)
     }
@@ -95,16 +97,21 @@ extension CreateProfileView.ViewModel {
     func addBasicInformation(completion: @escaping (Bool) -> Void) {
         self.isLoading = true
         
-        NetworkManager.shared.request(endPoint: APIEndpoint.addBasicInformation(
-            id: self.profileID,
+        let params = AddBasicInformationRequest(
             name: self.basicInfo.name,
             designation: self.desigationID,
             email: self.basicInfo.email,
             phone: "+92" + self.basicInfo.phone,
-            git: self.basicInfo.github,
-            linkedin: self.basicInfo.linkedin,
+            git_link: self.basicInfo.github,
+            linked_in_link: self.basicInfo.linkedin,
             summary: self.basicInfo.summary
-        ), responseType: AddInfomationResponseModel.self)
+        )
+        
+        NetworkManager.shared.request(
+            endPoint: APIEndpoint.addBasicInformation(id: self.profileID),
+            responseType: AddInfomationResponseModel.self,
+            encodableParameters: params
+        )
             .sink { result in
                 self.isLoading = false
                 
@@ -126,9 +133,9 @@ extension CreateProfileView.ViewModel {
     func addExperienceAPI(completion: @escaping (Bool) -> Void) {
         self.isLoading = true
         
-        let currentExperience = self.mapToAddExperience(from: currentExperience, designation: "Senior iOS Developer")
+        let currentExperience = self.mapToAddExperience(from: self.currentExperience)
         let previousExperience = self.previousExperience.map {
-            self.mapToAddExperience(from: $0, designation: "Junior iOS Developer")
+            self.mapToAddExperience(from: $0)
         }
         let params = AddExperienceRequest(
             current_experience: currentExperience,
@@ -182,6 +189,58 @@ extension CreateProfileView.ViewModel {
         }
     }
     
+    //MARK: - VALIDATION FOR EXPERIENCE -
+    func validationForExperience() -> Bool {
+        var errorMessage: String?
+        
+        // Validate current experience
+        if currentExperience.companyName.isEmpty {
+            errorMessage = "Company name is required for current experience"
+        } else if currentExperience.startDate.isEmpty {
+            errorMessage = "Start date is required for current experience"
+        } else if currentExperience.endDate.isEmpty {
+            errorMessage = "End date is required for current experience"
+        } else if currentExperience.designationName.isEmpty {
+            errorMessage = "Designation name is required for current experience"
+        } else if currentExperience.designationID.isEmpty {
+            errorMessage = "Designation ID is required for current experience"
+        } else if currentExperience.description.isEmpty {
+            errorMessage = "Description is required for current experience"
+        }
+        
+        // Validate previous experience
+        if errorMessage == nil && self.previousExperience.count > 0 {
+            for experience in previousExperience {
+                if experience.companyName.isEmpty {
+                    errorMessage = "Company name is required for previous experience"
+                    break
+                } else if experience.startDate.isEmpty {
+                    errorMessage = "Start date is required for previous experience"
+                    break
+                } else if experience.endDate.isEmpty {
+                    errorMessage = "End date is required for previous experience"
+                    break
+                } else if experience.designationName.isEmpty {
+                    errorMessage = "Designation name is required for previous experience"
+                    break
+                } else if experience.designationID.isEmpty {
+                    errorMessage = "Designation ID is required for previous experience"
+                    break
+                } else if experience.description.isEmpty {
+                    errorMessage = "Description is required for previous experience"
+                    break
+                }
+            }
+        }
+        
+        if let error = errorMessage {
+            self.showErrorAlert(error)
+            return false
+        } else {
+            return true
+        }
+    }
+    
     //MARK: - SET BASIC INFO -
     private func setBasicInfo() {
         var basicInformation: BasicInfoUserModel
@@ -193,7 +252,8 @@ extension CreateProfileView.ViewModel {
                 email: basicInfo.email ?? "",
                 phone: Utilities.shared.removeThePrefixFromPhoneNumber("+92", basicInfo.phone),
                 github: basicInfo.gitLink ?? "",
-                linkedin: basicInfo.linkedInLink ?? "", summary: basicInfo.summary ?? ""
+                linkedin: basicInfo.linkedInLink ?? "", 
+                summary: basicInfo.summary ?? ""
             )
         } else {
             basicInformation = BasicInfoUserModel(
@@ -208,6 +268,55 @@ extension CreateProfileView.ViewModel {
         }
         
         self.basicInfo = basicInformation
+    }
+    
+    //MARK: - SET EXPERIENCE -
+    private func setExperience() {
+        self.setCurrentExperience()
+        self.setPreviousExperience()
+    }
+    
+    //MARK: - SET CURRENT EXPERIENCE -
+    private func setCurrentExperience() {
+        var currentExperience: ExperienceInfoUserModel
+        
+        if let current = self.model?.experience?.currentExperience {
+            currentExperience = ExperienceInfoUserModel(
+                companyName: current.company ?? "",
+                startDate: current.startDate ?? "",
+                endDate: current.endDate ?? "",
+                designationName: current.designation?.name ?? "",
+                designationID: current.designation?.id ?? "",
+                description: current.description ?? ""
+            )
+        } else {
+            currentExperience = ExperienceInfoUserModel(
+                companyName: "NextBridge",
+                startDate: "",
+                endDate: "Present",
+                designationName: self.designation,
+                designationID: self.desigationID,
+                description: ""
+            )
+        }
+        
+        self.currentExperience = currentExperience
+    }
+    
+    //MARK: - SET PREVIOUS EXPERIENCE -
+    private func setPreviousExperience() {
+        if let previousExperiences = self.model?.experience?.previousExperience, !previousExperiences.isEmpty {
+            for previousExperience in previousExperiences {
+                self.previousExperience.append(ExperienceInfoUserModel(
+                    companyName: previousExperience.company ?? "",
+                    startDate: previousExperience.startDate ?? "",
+                    endDate: previousExperience.endDate ?? "",
+                    designationName: previousExperience.designation?.name ?? "",
+                    designationID: previousExperience.designation?.id ?? "",
+                    description: previousExperience.description ?? ""
+                ))
+            }
+        }
     }
     
     //MARK: - SET DESIGNATION ID -
@@ -229,11 +338,17 @@ extension CreateProfileView.ViewModel {
         self.isShowEndDatePicker = true
     }
     
+    //MARK: - SHOW EXPERIENCE DESIGNATION -
+    func showExperienceDesignation(for index: Int) {
+        self.selectedExperienceIndex = index
+        self.isShowExperienceDesignationPicker = true
+    }
+    
     //MARK: - MAP TO ADD EXPERIENCE -
-    private func mapToAddExperience(from model: ExperienceInfoUserModel, designation: String) -> AddExperience {
+    private func mapToAddExperience(from model: ExperienceInfoUserModel) -> AddExperience {
         return AddExperience(
-            company: model.companyName,
-            designation: designation,
+            company_name: model.companyName,
+            designation: model.designationID,
             start_date: model.startDate,
             end_date: model.endDate,
             description: model.description

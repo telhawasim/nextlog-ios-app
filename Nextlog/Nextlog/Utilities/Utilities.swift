@@ -39,10 +39,10 @@ class Utilities {
     }
     
     //MARK: - FORMAT DATE INTO STRING -
-    func formatDateIntoString(_ date: Date) -> String {
+    func formatDateIntoString(_ date: Date, formate: DateFormateType) -> String {
         let formatter = DateFormatter()
         
-        formatter.dateFormat = "dd MMM, yyyy"
+        formatter.dateFormat = formate.rawValue
         
         return formatter.string(from: date)
     }
@@ -92,5 +92,15 @@ class Utilities {
         }
         
         return String(phone.dropFirst(prefix.count))
+    }
+    
+    //MARK: - CONVERT STRING TO DATE -
+    func convertStringToDate(_ dateString: String, formate: DateFormateType) -> Date? {
+        let inputFormatter = DateFormatter()
+        
+        inputFormatter.dateFormat = formate.rawValue
+        inputFormatter.locale = Locale(identifier: "en_US_POSIX")
+        inputFormatter.timeZone = TimeZone(abbreviation: "UTC")
+        return inputFormatter.date(from: dateString)
     }
 }

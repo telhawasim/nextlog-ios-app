@@ -131,13 +131,6 @@ extension AddEmployeeView.ViewModel {
         }
     }
     
-    //MARK: - GET DESIGNATION -
-    func getDesignationId() {
-        if let designation = self.desigations?.first(where: { $0.name == self.designation }) {
-            self.designationId = designation.id ?? ""
-        }
-    }
-    
     //MARK: - GET DEPARTMENT ID -
     func getDepartmentId() {
         if let department = self.departments?.first(where: { $0.name == self.department }) {

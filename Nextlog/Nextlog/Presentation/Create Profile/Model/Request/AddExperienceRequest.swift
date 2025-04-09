@@ -14,7 +14,7 @@ struct AddExperienceRequest: Encodable {
 }
 
 struct AddExperience: Encodable {
-    var company: String
+    var company_name: String
     var designation: String
     var start_date: String
     var end_date: String

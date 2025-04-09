@@ -170,8 +170,8 @@ struct AddEmployeeView: View {
                 isShowPicker: self.$viewModel.isShowDesignationPicker,
                 values: self.viewModel.desigations ?? [],
                 onPress: { designation in
-                    self.viewModel.designation = designation
-                    self.viewModel.getDesignationId()
+                    self.viewModel.designation = designation.name ?? ""
+                    self.viewModel.designationId = designation.id ?? ""
                 }
             )
             .opacity(self.viewModel.isShowDesignationPicker ? 1 : 0)
@@ -181,8 +181,8 @@ struct AddEmployeeView: View {
                 isShowPicker: self.$viewModel.isShowDepartmentPicker,
                 values: self.viewModel.departments ?? [],
                 onPress: { department in
-                    self.viewModel.department = department
-                    self.viewModel.getDepartmentId()
+                    self.viewModel.department = department.name ?? ""
+                    self.viewModel.departmentId = department.id ?? ""
                 }
             )
             .opacity(self.viewModel.isShowDepartmentPicker ? 1 : 0)

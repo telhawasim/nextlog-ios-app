@@ -21,8 +21,7 @@ struct CreateProfileExperienceView: View {
     var onPressDelete: (() -> Void)?
     var onPressStartDate: (() -> Void)?
     var onPressEndDate: (() -> Void)?
-    //State
-    @State private var designation: String = ""
+    var onPressDesignation: (() -> Void)?
     
     //MARK: - VIEWS -
     var body: some View {
@@ -159,6 +158,7 @@ struct CreateProfileExperienceView: View {
                         }
                     }
                 })
+                .disabled(self.isCurrentExperience)
                 // Divider
                 Divider()
             }
@@ -166,8 +166,11 @@ struct CreateProfileExperienceView: View {
             if !(self.isCurrentExperience) {
                 // Designation TextField
                 AddEmployeeDesignationTextField(
-                    value: self.$designation,
-                    isDesignation: true
+                    value: self.$experience.designationName,
+                    isDesignation: true,
+                    onPress: {
+                        self.onPressDesignation?()
+                    }
                 )
             }
             // Summary TextField
@@ -203,6 +206,6 @@ extension CreateProfileExperienceView {
 
 #Preview {
     CreateProfileExperienceView(
-        experience: Binding.constant(ExperienceInfoUserModel(companyName: "", startDate: "", endDate: "", description: ""))
+        experience: Binding.constant(ExperienceInfoUserModel(companyName: "", startDate: "", endDate: "", designationName: "", designationID: "", description: ""))
     )
 }

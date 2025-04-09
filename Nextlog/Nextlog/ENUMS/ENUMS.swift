@@ -18,6 +18,7 @@ enum ScreenType: Hashable {
     case employeeDetails(EmployeeDetailView.ViewModel)
     case addEmployee(AddEmployeeView.ViewModel)
     case createProfile(CreateProfileView.ViewModel)
+    case profileDetail(ProfileDetailView.ViewModel)
 }
 
 enum FontSize: CGFloat {
@@ -69,4 +70,10 @@ enum CategoryType: String, CaseIterable, Hashable {
     case education = "Education"
     case skills = "Skills"
     case projects = "Projects"
+}
+
+//MARK: - DATE FORMATE TYPE -
+enum DateFormateType: String {
+    case dd_MMM_yyyy = "dd MMM, yyyy"
+    case mmm_yyyy = "MMM yyyy"
 }

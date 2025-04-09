@@ -26,7 +26,7 @@ enum APIEndpoint {
     case getProfileDetail(id: String)
     case addProfile
     case deleteProfile(id: String)
-    case addBasicInformation(id: String, name: String, designation: String, email: String, phone: String, git: String? = nil, linkedin: String? = nil, summary: String)
+    case addBasicInformation(id: String)
     case addExperience(id: String)
     
     //MARK: - URL -
@@ -52,7 +52,7 @@ enum APIEndpoint {
             return APIEndpoint.baseURL + "profile/add"
         case .deleteProfile(let id):
             return APIEndpoint.baseURL + "profile/delete/\(id)"
-        case .addBasicInformation(let id, _, _, _, _, _, _, _):
+        case .addBasicInformation(let id):
             return APIEndpoint.baseURL + "profile/\(id)/basic-information"
         case .addExperience(let id):
             return APIEndpoint.baseURL + "profile/\(id)/experience"
@@ -102,44 +102,6 @@ enum APIEndpoint {
                 HTTPHeader(name: "Content-Type", value: "application/json"),
                 HTTPHeader(name: "Accept", value: "application/json")
             ])
-        }
-    }
-    
-    //MARK: - PARAMETERS -
-    var parameters: Parameters? {
-        switch self {
-        case .login:
-            return nil
-        case .getEmployees:
-            return nil
-        case .getEmployeeDetails:
-            return nil
-        case .addEmployee:
-            return nil
-        case .deleteEmployee:
-            return nil
-        case .getDesignations:
-            return nil
-        case .getDepartments:
-            return nil
-        case .getProfileDetail:
-            return nil
-        case .deleteProfile:
-            return nil
-        case .addProfile:
-            return nil
-        case .addBasicInformation(_ , let name, let designation, let email, let phone, let git, let linkedin, let summary):
-            return [
-                "name": name,
-                "designation": designation,
-                "email": email,
-                "phone": phone,
-                "git_link": git,
-                "linked_in_link": linkedin,
-                "summary": summary
-            ]
-        case .addExperience:
-            return nil
         }
     }
 }
