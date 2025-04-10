@@ -53,7 +53,7 @@ struct CreateProfileExperienceView: View {
                         }
                     })
                 }
-                .frame(height: 59)
+                .frame(height: 45)
             }
             // Company Textfield
             VStack(alignment: .leading, spacing: 10) {

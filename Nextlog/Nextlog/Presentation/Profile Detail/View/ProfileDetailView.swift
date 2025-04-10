@@ -97,6 +97,17 @@ struct ProfileDetailView: View {
                             )
                         }
                     }
+                    // Education Header
+                    ProfileDetailHeaderView(
+                        title: "Education"
+                    )
+                    if let qualification = self.viewModel.model?.qualification {
+                        ForEach(qualification, id: \.degree) { qualification in
+                            ProfileDetailEducationView(
+                                education: qualification
+                            )
+                        }
+                    }
                 }
             }
             .padding(.top, 10)

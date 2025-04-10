@@ -196,10 +196,18 @@ struct CreateProfileView: View {
                                     ForEach(self.viewModel.education.indices, id: \.self) { index in
                                         CreateProfileEducationView(
                                             education: self.$viewModel.education[index],
-                                            isFirst: index == 0,
                                             index: index,
+                                            count: self.viewModel.education.count,
+                                            selectedStartDate: self.viewModel.education[index].startDate,
+                                            selectedEndDate: self.viewModel.education[index].endDate,
                                             onPressDelete: {
                                                 self.deleteTheEducation(index)
+                                            },
+                                            onPressStart: {
+                                                self.viewModel.showEducationStartDatePicker(for: index)
+                                            },
+                                            onPressEnd: {
+                                                self.viewModel.showEducationEndDatePicker(for: index)
                                             }
                                         )
                                         .id("qualification_\(index)")
@@ -237,8 +245,16 @@ struct CreateProfileView: View {
                                             CreateProfileCertificateView(
                                                 certificate: self.$viewModel.certificates[index],
                                                 index: index,
+                                                selectedStartDate: self.viewModel.certificates[index].startDate,
+                                                selectedEndDate: self.viewModel.certificates[index].endDate,
                                                 onPressDelete: {
                                                     self.deleteTheCertificates(index)
+                                                },
+                                                onPressStart: {
+                                                    self.viewModel.showCertificationStartDatePicker(for: index)
+                                                },
+                                                onPressEnd: {
+                                                    self.viewModel.showCertificateEndDatePicker(for: index)
                                                 }
                                             )
                                             .id("certificate_\(index)")
@@ -536,6 +552,106 @@ struct CreateProfileView: View {
                     }
                 }
             )
+            // State Date Picker (Education)
+            DatePickerView(
+                isShowDatePicker: self.$viewModel.isShowEducationStartDatePicker,
+                selectedValue: Binding<String>(
+                    get: {
+                        if let index = self.viewModel.selectedEducationIndex,
+                           self.viewModel.education.indices.contains(index) {
+                            return self.viewModel.education[index].startDate
+                        } else {
+                            return ""
+                        }
+                    },
+                    set: { newDate in
+                        if let index = self.viewModel.selectedEducationIndex,
+                           self.viewModel.education.indices.contains(index) {
+                            self.viewModel.education[index].startDate = newDate
+                        }
+                    }
+                ),
+                selectedDate: self.$viewModel.selectedEducationStartDate,
+                onPressDone: {
+                    self.viewModel.selectedEducationEndDate = Date()
+                    if let index = self.viewModel.selectedEducationIndex,
+                       self.viewModel.education.indices.contains(index) {
+                        self.viewModel.education[index].endDate = ""
+                    }
+                }
+            )
+            // End Date Picker (Education)
+            DatePickerView(
+                isShowDatePicker: self.$viewModel.isShowEducationEndDatePicker,
+                selectedValue: Binding<String>(
+                    get: {
+                        if let index = self.viewModel.selectedEducationIndex,
+                           self.viewModel.education.indices.contains(index) {
+                            return self.viewModel.education[index].endDate
+                        } else {
+                            return ""
+                        }
+                    },
+                    set: { newDate in
+                        if let index = self.viewModel.selectedEducationIndex,
+                           self.viewModel.education.indices.contains(index) {
+                            self.viewModel.education[index].endDate = newDate
+                        }
+                    }
+                ),
+                selectedDate: self.$viewModel.selectedEducationEndDate,
+                minimuDate: self.viewModel.selectedEducationStartDate
+            )
+            // State Date Picker (Certification)
+            DatePickerView(
+                isShowDatePicker: self.$viewModel.isShowCertificationStartDatePicker,
+                selectedValue: Binding<String>(
+                    get: {
+                        if let index = self.viewModel.selectedCertificationIndex,
+                           self.viewModel.certificates.indices.contains(index) {
+                            return self.viewModel.certificates[index].startDate
+                        } else {
+                            return ""
+                        }
+                    },
+                    set: { newDate in
+                        if let index = self.viewModel.selectedCertificationIndex,
+                           self.viewModel.certificates.indices.contains(index) {
+                            self.viewModel.certificates[index].startDate = newDate
+                        }
+                    }
+                ),
+                selectedDate: self.$viewModel.selectedCertificationStartDate,
+                onPressDone: {
+                    self.viewModel.selectedCertificationEndDate = Date()
+                    if let index = self.viewModel.selectedCertificationIndex,
+                       self.viewModel.certificates.indices.contains(index) {
+                        self.viewModel.certificates[index].endDate = ""
+                    }
+                }
+            )
+            // End Date Picker (Certification)
+            DatePickerView(
+                isShowDatePicker: self.$viewModel.isShowCertificationEndDatePicker,
+                selectedValue: Binding<String>(
+                    get: {
+                        if let index = self.viewModel.selectedCertificationIndex,
+                           self.viewModel.certificates.indices.contains(index) {
+                            return self.viewModel.certificates[index].endDate
+                        } else {
+                            return ""
+                        }
+                    },
+                    set: { newDate in
+                        if let index = self.viewModel.selectedCertificationIndex,
+                           self.viewModel.certificates.indices.contains(index) {
+                            self.viewModel.certificates[index].endDate = newDate
+                        }
+                    }
+                ),
+                selectedDate: self.$viewModel.selectedCertificationEndDate,
+                minimuDate: self.viewModel.selectedCertificationStartDate
+            )
         }
         .animation(.default, value: self.selectedCategory)
         .alert(isPresented: self.$viewModel.isShowErrorAlert) {
@@ -583,7 +699,13 @@ extension CreateProfileView {
                 }
             }
         case .education:
-            self.selectedCategory = .skills
+            if (self.viewModel.validationForQualification()) {
+                self.viewModel.addQualificationAPI { (isSuccess) in
+                    if (isSuccess) {
+                        self.selectedCategory = .skills
+                    }
+                }
+            }
         case .skills:
             self.selectedCategory = .projects
         case .projects:
@@ -763,6 +885,13 @@ extension CreateProfileView {
     private func deleteTheEducation(_ index: Int) {
         _ = withAnimation {
             self.viewModel.education.remove(at: index)
+        }
+        
+        if let selected = self.viewModel.selectedEducationIndex,
+           selected == index || selected >= self.viewModel.education.count {
+            self.viewModel.selectedEducationIndex = nil
+            self.viewModel.isShowEducationStartDatePicker = false
+            self.viewModel.isShowEducationEndDatePicker = false
         }
     }
     

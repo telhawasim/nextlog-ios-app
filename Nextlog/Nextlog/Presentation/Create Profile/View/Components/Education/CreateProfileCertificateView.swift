@@ -13,10 +13,11 @@ struct CreateProfileCertificateView: View {
     
     @Binding var certificate: CertificateInfoUserModel
     var index: Int
+    var selectedStartDate: String = ""
+    var selectedEndDate: String = ""
     var onPressDelete: (() -> Void)?
-    
-    @State var selectedStartDate: String = ""
-    @State var selectedEndDate: String = ""
+    var onPressStart: (() -> Void)?
+    var onPressEnd: (() -> Void)?
     
     //MARK: - VIEWS -
     var body: some View {
@@ -101,7 +102,7 @@ struct CreateProfileCertificateView: View {
                 .padding(.bottom, -7)
                 // Date Picker Button
                 Button(action: {
-                    //                    self.onPress?()
+                    self.onPressStart?()
                 }, label: {
                     // Text and Logo
                     HStack {
@@ -144,7 +145,7 @@ struct CreateProfileCertificateView: View {
                 .padding(.bottom, -7)
                 // Date Picker Button
                 Button(action: {
-                    //                    self.onPress?()
+                    self.onPressEnd?()
                 }, label: {
                     // Text and Logo
                     HStack {

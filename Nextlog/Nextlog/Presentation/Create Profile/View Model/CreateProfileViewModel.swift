@@ -38,6 +38,18 @@ extension CreateProfileView {
         @Published var currentExperience: ExperienceInfoUserModel = ExperienceInfoUserModel.setInitialDataForCurrentExperience()
         @Published var previousExperience: [ExperienceInfoUserModel] = []
         @Published var currentExperienceDesignation: DesignationModel
+        //Education
+        @Published var isShowEducationStartDatePicker: Bool = false
+        @Published var isShowEducationEndDatePicker: Bool = false
+        @Published var selectedEducationIndex: Int? = nil // For Education
+        @Published var selectedEducationStartDate: Date = Date()
+        @Published var selectedEducationEndDate: Date = Date()
+        //Certification
+        @Published var isShowCertificationStartDatePicker: Bool = false
+        @Published var isShowCertificationEndDatePicker: Bool = false
+        @Published var selectedCertificationIndex: Int? = nil // For Certification
+        @Published var selectedCertificationStartDate: Date = Date()
+        @Published var selectedCertificationEndDate: Date = Date()
         
         @Published var isLoading: Bool = false
         @Published var isShowErrorAlert: Bool = false
@@ -89,6 +101,8 @@ extension CreateProfileView.ViewModel {
                 self.model = response
                 self.setBasicInfo()
                 self.setExperience()
+                self.setQualification()
+                self.setCertification()
             }
             .store(in: &self.cancellables)
     }
@@ -163,6 +177,44 @@ extension CreateProfileView.ViewModel {
         .store(in: &self.cancellables)
     }
     
+    //MARK: - ADD QUALIFICATION API -
+    func addQualificationAPI(completion: @escaping (Bool) -> Void) {
+        self.isLoading = true
+        
+        let qualifications = self.education.map {
+            self.mapToAddQualification(from: $0)
+        }
+        let certifications = self.certificates.map {
+            self.mapToAddCertification(from: $0)
+        }
+        let params = AddQualificationRequest(
+            qualification: qualifications,
+            certification: certifications
+        )
+        
+        NetworkManager.shared.request(
+            endPoint: APIEndpoint.addQualification(id: self.profileID),
+            responseType: AddInfomationResponseModel.self,
+            encodableParameters: params
+        )
+        .sink { result in
+            self.isLoading = false
+            
+            switch result {
+            case .failure(let error):
+                print(error)
+                completion(false)
+            case .finished:
+                break
+            }
+        } receiveValue: { _ in
+            self.isLoading = false
+            
+            completion(true)
+        }
+        .store(in: &self.cancellables)
+    }
+    
     //MARK: - VALIDATION FOR BASIC INFORMATION -
     func validationForBasicInformation() -> Bool {
         var errorMessage: String?
@@ -228,6 +280,56 @@ extension CreateProfileView.ViewModel {
                     break
                 } else if experience.description.isEmpty {
                     errorMessage = "Description is required for previous experience"
+                    break
+                }
+            }
+        }
+        
+        if let error = errorMessage {
+            self.showErrorAlert(error)
+            return false
+        } else {
+            return true
+        }
+    }
+    
+    //MARK: - VALIDATION FOR EXPERIENCE -
+    func validationForQualification() -> Bool {
+        var errorMessage: String?
+        
+        // Validate education
+        if (self.education.count > 0) {
+            for education in self.education {
+                if education.degree.isEmpty {
+                    errorMessage = "Degree is required in qualification"
+                    break
+                } else if education.institution.isEmpty {
+                    errorMessage = "Institution is required in qualification"
+                    break
+                } else if education.startDate.isEmpty {
+                    errorMessage = "Start date is required for previous experience"
+                    break
+                } else if education.endDate.isEmpty {
+                    errorMessage = "End date is required for previous experience"
+                    break
+                }
+            }
+        }
+        
+        // Validate the certificates
+        if errorMessage == nil && self.certificates.count > 0 {
+            for certificate in self.certificates {
+                if certificate.name.isEmpty {
+                    errorMessage = "Course name is required in certificate"
+                    break
+                } else if certificate.institution.isEmpty {
+                    errorMessage = "Institution is required in certificate"
+                    break
+                } else if certificate.startDate.isEmpty {
+                    errorMessage = "Start date is required in certificate"
+                    break
+                } else if certificate.endDate.isEmpty {
+                    errorMessage = "End date is required in certificate"
                     break
                 }
             }
@@ -319,6 +421,37 @@ extension CreateProfileView.ViewModel {
         }
     }
     
+    //MARK: - SET QUALIFICATION -
+    private func setQualification() {
+        if let qualification = self.model?.qualification, !qualification.isEmpty {
+            self.education = []
+            for qualificationData in qualification {
+                self.education.append(EducationInfoUserModel(
+                    degree: qualificationData.degree ?? "",
+                    institution: qualificationData.institution ?? "",
+                    startDate: qualificationData.startDate ?? "",
+                    endDate: qualificationData.endDate ?? ""
+                ))
+            }
+        } else {
+            self.education = [EducationInfoUserModel.setIntialData()]
+        }
+    }
+    
+    //MARK: - SET CERTIFICATION -
+    private func setCertification() {
+        if let certification = self.model?.certification, !certification.isEmpty {
+            for certificate in certification {
+                self.certificates.append(CertificateInfoUserModel(
+                    name: certificate.courseName ?? "",
+                    institution: certificate.institution ?? "",
+                    startDate: certificate.startDate ?? "",
+                    endDate: certificate.endDate ?? ""
+                ))
+            }
+        }
+    }
+    
     //MARK: - SET DESIGNATION ID -
     func setDesignationID(_ designation: String) {
         if let designationID = AppStorage.designations?.first(where: { $0.name == designation }) {
@@ -344,6 +477,30 @@ extension CreateProfileView.ViewModel {
         self.isShowExperienceDesignationPicker = true
     }
     
+    //MARK: - SHOW EDUCATION START DATE PICKER -
+    func showEducationStartDatePicker(for index: Int?) {
+        self.selectedEducationIndex = index
+        self.isShowEducationStartDatePicker = true
+    }
+    
+    //MARK: - SHOW EDUCATION END DATE PICKER -
+    func showEducationEndDatePicker(for index: Int?) {
+        self.selectedExperienceIndex = index
+        self.isShowEducationEndDatePicker = true
+    }
+    
+    //MARK: - SHOW CERTIFICATE START DATE PICKER -
+    func showCertificationStartDatePicker(for index: Int?) {
+        self.selectedCertificationIndex = index
+        self.isShowCertificationStartDatePicker = true
+    }
+    
+    //MARK: - SHOW CERTIFICATE END DATE PICKER -
+    func showCertificateEndDatePicker(for index: Int?) {
+        self.selectedCertificationIndex = index
+        self.isShowCertificationEndDatePicker = true
+    }
+    
     //MARK: - MAP TO ADD EXPERIENCE -
     private func mapToAddExperience(from model: ExperienceInfoUserModel) -> AddExperience {
         return AddExperience(
@@ -352,6 +509,26 @@ extension CreateProfileView.ViewModel {
             start_date: model.startDate,
             end_date: model.endDate,
             description: model.description
+        )
+    }
+        
+    //MARK: - MAP TO ADD QUALIFICATION -
+    private func mapToAddQualification(from model: EducationInfoUserModel) -> AddQualification {
+        return AddQualification(
+            degree: model.degree,
+            institution: model.institution,
+            start_date: model.startDate,
+            end_date: model.endDate
+        )
+    }
+    
+    //MARK: - MAP TO ADD CERTIFICATION -
+    private func mapToAddCertification(from model: CertificateInfoUserModel) -> AddCertification {
+        return AddCertification(
+            course_name: model.name,
+            institution: model.institution,
+            start_date: model.startDate,
+            end_date: model.endDate
         )
     }
     

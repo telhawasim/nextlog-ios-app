@@ -14,29 +14,27 @@ struct CreateProfileEducationView: View {
     //Binding
     @Binding var education: EducationInfoUserModel
     //Normal
-    var isFirst: Bool = false
     var index: Int
+    var count: Int = 0
+    var selectedStartDate: String = ""
+    var selectedEndDate: String = ""
     var onPressDelete: (() -> Void)?
-    
-    @State var selectedStartDate: String = ""
-    @State var selectedEndDate: String = ""
-    @State var designation: String = ""
-    @State var summary: String = ""
+    var onPressStart: (() -> Void)?
+    var onPressEnd: (() -> Void)?
     
     //MARK: - VIEWS -
     var body: some View {
         VStack(spacing: 20) {
-            // Only show if education is not first
-            if !(self.isFirst) {
-                // Number and Delete Button
-                HStack {
-                    // Number
-                    Text("\(self.index + 1)")
-                        .frame(width: 32, height: 32)
-                        .background(Color.colorF7F7F7)
-                        .clipShape(Circle())
-                    // Spacer
-                    Spacer()
+            // Number and Delete Button
+            HStack {
+                // Number
+                Text("\(self.index + 1)")
+                    .frame(width: 32, height: 32)
+                    .background(Color.colorF7F7F7)
+                    .clipShape(Circle())
+                // Spacer
+                Spacer()
+                if !(self.count == 1) {
                     // Delete Button
                     Button(action: {
                         self.onPressDelete?()
@@ -53,8 +51,8 @@ struct CreateProfileEducationView: View {
                         }
                     })
                 }
-                .frame(height: 59)
             }
+            .frame(height: 45)
             // Company Textfield
             VStack(alignment: .leading, spacing: 10) {
                 // Title and Asterisk
@@ -109,7 +107,7 @@ struct CreateProfileEducationView: View {
                 .padding(.bottom, -7)
                 // Date Picker Button
                 Button(action: {
-                    //                    self.onPress?()
+                    self.onPressStart?()
                 }, label: {
                     // Text and Logo
                     HStack {
@@ -152,7 +150,7 @@ struct CreateProfileEducationView: View {
                 .padding(.bottom, -7)
                 // Date Picker Button
                 Button(action: {
-                    //                    self.onPress?()
+                    self.onPressEnd?()
                 }, label: {
                     // Text and Logo
                     HStack {

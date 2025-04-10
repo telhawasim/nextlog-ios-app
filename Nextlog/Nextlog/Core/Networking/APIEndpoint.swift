@@ -28,6 +28,7 @@ enum APIEndpoint {
     case deleteProfile(id: String)
     case addBasicInformation(id: String)
     case addExperience(id: String)
+    case addQualification(id: String)
     
     //MARK: - URL -
     var url: String {
@@ -56,6 +57,8 @@ enum APIEndpoint {
             return APIEndpoint.baseURL + "profile/\(id)/basic-information"
         case .addExperience(let id):
             return APIEndpoint.baseURL + "profile/\(id)/experience"
+        case .addQualification(let id):
+            return APIEndpoint.baseURL + "profile/\(id)/qualification"
         }
     }
     
@@ -85,6 +88,8 @@ enum APIEndpoint {
         case .addBasicInformation:
             return .put
         case .addExperience:
+            return .put
+        case .addQualification:
             return .put
         }
     }

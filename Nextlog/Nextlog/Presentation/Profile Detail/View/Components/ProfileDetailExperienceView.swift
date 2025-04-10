@@ -26,7 +26,7 @@ struct ProfileDetailExperienceView: View {
                     Text(self.handleExperienceDate())
                         .font(.getMedium(.h16))
                 }
-                Text("SSE")
+                Text(self.experience?.designation?.name ?? "")
                     .font(.getMedium(.h16))
             }
             ExpandableText(self.experience?.description ?? "")
