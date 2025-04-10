@@ -9,7 +9,7 @@ import Alamofire
 
 enum APIEndpoint {
     
-    private static let baseURL = "http://127.0.0.1:8000/"
+    static let baseURL = "http://127.0.0.1:8000/"
     
     // AUTHENTICATION
     case login
@@ -29,6 +29,7 @@ enum APIEndpoint {
     case addBasicInformation(id: String)
     case addExperience(id: String)
     case addQualification(id: String)
+    case addSkill(id: String)
     
     //MARK: - URL -
     var url: String {
@@ -59,6 +60,8 @@ enum APIEndpoint {
             return APIEndpoint.baseURL + "profile/\(id)/experience"
         case .addQualification(let id):
             return APIEndpoint.baseURL + "profile/\(id)/qualification"
+        case .addSkill(let id):
+            return APIEndpoint.baseURL + "profile/\(id)/skill"
         }
     }
     
@@ -90,6 +93,8 @@ enum APIEndpoint {
         case .addExperience:
             return .put
         case .addQualification:
+            return .put
+        case .addSkill:
             return .put
         }
     }

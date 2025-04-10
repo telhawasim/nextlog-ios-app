@@ -707,7 +707,11 @@ extension CreateProfileView {
                 }
             }
         case .skills:
-            self.selectedCategory = .projects
+            self.viewModel.addSkillAPI { (isSuccess) in
+                if (isSuccess) {
+                    self.navigateToProfileDetail()
+                }
+            }
         case .projects:
             break
         }
@@ -900,6 +904,13 @@ extension CreateProfileView {
         _ = withAnimation {
             self.viewModel.certificates.remove(at: index)
         }
+        
+        if let selected = self.viewModel.selectedCertificationIndex,
+           selected == index || selected >= self.viewModel.certificates.count {
+            self.viewModel.selectedCertificationIndex = nil
+            self.viewModel.isShowCertificationStartDatePicker = false
+            self.viewModel.isShowCertificationEndDatePicker = false
+        }
     }
     
     //MARK: - DELETE THE AWARDS -
@@ -928,6 +939,12 @@ extension CreateProfileView {
         _ = withAnimation {
             self.viewModel.tools.remove(at: index)
         }
+    }
+    
+    //MARK: - NAVIGATE TO PROFILE DETAIL -
+    private func navigateToProfileDetail() {
+        let viewModel = ProfileDetailView.ViewModel(profileID: self.viewModel.profileID)
+        self.router.push(.profileDetail(viewModel))
     }
 }
 

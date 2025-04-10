@@ -5,6 +5,7 @@
 //  Created by Telha Wasim on 09/04/2025.
 //
 
+import SwiftUI
 import Combine
 
 extension ProfileDetailView {
@@ -13,10 +14,14 @@ extension ProfileDetailView {
     class ViewModel: BaseViewModel {
         
         //MARK: - PROPERTIES -
+        
+        //Normal
         let profileID: String
         private var cancellables = Set<AnyCancellable>()
+        //Published
         @Published var isLoading = false
         @Published var model: GetProfileDetailResponseModel?
+        @Published var userImage: UIImage?
         
         //MARK: - INITIALIZER -
         init(profileID: String) {
@@ -52,7 +57,17 @@ extension ProfileDetailView.ViewModel {
             self.isLoading = false
             
             self.model = response
+            self.fetchUserImage()
         }
         .store(in: &self.cancellables)
+    }
+    
+    //MARK: - FETCH USER IMAGE -
+    private func fetchUserImage() {
+        Utilities.shared.fetchImage(from: APIEndpoint.baseURL + (self.model?.employee?.avatar ?? "")) { image in
+            DispatchQueue.main.async {
+                self.userImage = image
+            }
+        }
     }
 }

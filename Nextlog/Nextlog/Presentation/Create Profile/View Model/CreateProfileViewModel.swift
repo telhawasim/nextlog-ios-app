@@ -44,26 +44,27 @@ extension CreateProfileView {
         @Published var selectedEducationIndex: Int? = nil // For Education
         @Published var selectedEducationStartDate: Date = Date()
         @Published var selectedEducationEndDate: Date = Date()
+        @Published var education: [EducationInfoUserModel] = [EducationInfoUserModel.setIntialData()]
         //Certification
         @Published var isShowCertificationStartDatePicker: Bool = false
         @Published var isShowCertificationEndDatePicker: Bool = false
         @Published var selectedCertificationIndex: Int? = nil // For Certification
         @Published var selectedCertificationStartDate: Date = Date()
         @Published var selectedCertificationEndDate: Date = Date()
+        @Published var certificates: [CertificateInfoUserModel] = []
+        //Technical Skills
+        @Published var technicalSkills: [SkillInfoUserModel] = []
+        //Non-Technical Skills
+        @Published var nonTechnicalSkills: [SkillInfoUserModel] = []
+        //Tools
+        @Published var tools: [SkillInfoUserModel] = []
         
         @Published var isLoading: Bool = false
         @Published var isShowErrorAlert: Bool = false
         @Published var errorMessage: String = ""
         
         @Published var model: GetProfileDetailResponseModel?
-        
-        
-        @Published var education: [EducationInfoUserModel] = [EducationInfoUserModel.setIntialData()]
-        @Published var certificates: [CertificateInfoUserModel] = []
         @Published var awards: [AwardsInfoUserModel] = []
-        @Published var technicalSkills: [SkillInfoUserModel] = []
-        @Published var nonTechnicalSkills: [SkillInfoUserModel] = []
-        @Published var tools: [SkillInfoUserModel] = []
         
         //MARK: - INITIALIZER -
         init(profileID: String, name: String, email: String, phone: String, designation: String, designationID: String) {
@@ -194,6 +195,48 @@ extension CreateProfileView.ViewModel {
         
         NetworkManager.shared.request(
             endPoint: APIEndpoint.addQualification(id: self.profileID),
+            responseType: AddInfomationResponseModel.self,
+            encodableParameters: params
+        )
+        .sink { result in
+            self.isLoading = false
+            
+            switch result {
+            case .failure(let error):
+                print(error)
+                completion(false)
+            case .finished:
+                break
+            }
+        } receiveValue: { _ in
+            self.isLoading = false
+            
+            completion(true)
+        }
+        .store(in: &self.cancellables)
+    }
+    
+    //MARK: - ADD SKILL API -
+    func addSkillAPI(completion: @escaping (Bool) -> Void) {
+        self.isLoading = true
+        
+        let technicalSkills = self.technicalSkills.map {
+            self.mapToAddSkills(from: $0)
+        }
+        let nonTechnicalSkills = self.nonTechnicalSkills.map {
+            self.mapToAddSkills(from: $0)
+        }
+        let tools = self.tools.map {
+            self.mapToAddSkills(from: $0)
+        }
+        let params = AddSkillRequest(
+            technical_skills: technicalSkills,
+            non_technical_skills: nonTechnicalSkills,
+            tools: tools
+        )
+        
+        NetworkManager.shared.request(
+            endPoint: APIEndpoint.addSkill(id: self.profileID),
             responseType: AddInfomationResponseModel.self,
             encodableParameters: params
         )
@@ -529,6 +572,13 @@ extension CreateProfileView.ViewModel {
             institution: model.institution,
             start_date: model.startDate,
             end_date: model.endDate
+        )
+    }
+    
+    //MARK: - MAP TO ADD SKILLS -
+    private func mapToAddSkills(from model: SkillInfoUserModel) -> AddSkill {
+        return AddSkill(
+            name: model.name
         )
     }
     

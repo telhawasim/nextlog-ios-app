@@ -6,13 +6,17 @@
 //
 
 struct GetProfileDetailResponseModel: Codable {
+    var employee: ProfileDetailEmployeeModel?
     var id, employeeID, title, createdAt: String?
     var basicInformation: BasicInformation?
     var experience: ExperienceResponse?
     var qualification: [Qualification]?
     var certification: [Certificate]?
+    var skill: SkillResponse?
+    var tool: [Skill]?
     
     enum CodingKeys: String, CodingKey {
+        case employee
         case id
         case employeeID = "employee_id"
         case title
@@ -21,7 +25,16 @@ struct GetProfileDetailResponseModel: Codable {
         case experience
         case qualification
         case certification
+        case skill
+        case tool
     }
+}
+
+//MARK: - ProfileDetailEmployeeModel -
+struct ProfileDetailEmployeeModel: Codable {
+    var id: String?
+    var name: String?
+    var avatar: String?
 }
 
 // MARK: - BasicInformation
@@ -95,4 +108,20 @@ struct Certificate: Codable {
         case startDate = "start_date"
         case endDate = "end_date"
     }
+}
+
+//MARK: - SKILL RESPONSE -
+struct SkillResponse: Codable {
+    var technicalSkills: [Skill]?
+    var nonTechnicalSkills: [Skill]?
+    
+    private enum CodingKeys: String, CodingKey {
+        case technicalSkills = "technical_skills"
+        case nonTechnicalSkills = "non_technical_skills"
+    }
+}
+
+//MARK: - SKILL -
+struct Skill: Codable {
+    var name: String?
 }

@@ -16,6 +16,8 @@ struct ProfileDetailView: View {
     @EnvironmentObject private var router: Routing
     //StateObject
     @StateObject var viewModel: ProfileDetailView.ViewModel
+    //State
+    @State private var userImage: UIImage?
     
     //MARK: - VIEWS -
     var body: some View {
@@ -40,8 +42,19 @@ struct ProfileDetailView: View {
             // Picture and Options Buttons
             HStack {
                 // Picture
-                Circle()
-                    .frame(width: 56)
+                if let userImage = self.viewModel.userImage {
+                    Image(uiImage: userImage)
+                        .resizable()
+                        .aspectRatio(contentMode: .fill)
+                        .frame(width: 56, height: 56)
+                        .clipShape(Circle())
+                } else {
+                    Image(ImageEnum.icUserPlaceholder.rawValue)
+                        .resizable()
+                        .aspectRatio(contentMode: .fit)
+                        .frame(width: 56, height: 56)
+                        .clipShape(Circle())
+                }
                 // Spacer
                 Spacer()
             }
@@ -57,7 +70,7 @@ struct ProfileDetailView: View {
             }
             .padding(.top, 10)
             // ScrollView
-            ScrollView {
+            ScrollView(.vertical, showsIndicators: false) {
                 // Scroll Content View
                 LazyVStack(alignment: .leading, spacing: 0) {
                     // Contact View
@@ -101,12 +114,58 @@ struct ProfileDetailView: View {
                     ProfileDetailHeaderView(
                         title: "Education"
                     )
+                    // Only show in case qualification is not nil and array is not empty
                     if let qualification = self.viewModel.model?.qualification {
                         ForEach(qualification, id: \.degree) { qualification in
                             ProfileDetailEducationView(
                                 education: qualification
                             )
                         }
+                    }
+                    // Only show in case certification is not nil and array is not empty
+                    if let certification = self.viewModel.model?.certification, !certification.isEmpty {
+                        // Certification Title and Listing
+                        VStack(spacing: 0) {
+                            // Title
+                            ProfileDetailHeaderView(
+                                title: "Trainings & Certifications"
+                            )
+                            // Listing
+                            ForEach(certification, id: \.courseName) { certification in
+                                ProfileDetailEducationView(
+                                    certification: certification
+                                )
+                            }
+                        }
+                    }
+                    // Only show in case technical skills is not nil
+                    if let technicalSkills = self.viewModel.model?.skill?.technicalSkills {
+                        VStack {
+                            ProfileDetailHeaderView(
+                                title: "Technical Skills"
+                            )
+                            ProfileDetailSkillView(skill: technicalSkills)
+                        }
+                    }
+                    // Only show in case non technical skills is not nil
+                    if let nonTechnicalSkills = self.viewModel.model?.skill?.nonTechnicalSkills {
+                        VStack {
+                            ProfileDetailHeaderView(
+                                title: "Non Technical Skills"
+                            )
+                            ProfileDetailSkillView(skill: nonTechnicalSkills)
+                        }
+                        .padding(.top, 10)
+                    }
+                    // Only show in case tools is not nil
+                    if let tools = self.viewModel.model?.tool {
+                        VStack {
+                            ProfileDetailHeaderView(
+                                title: "Tools"
+                            )
+                            ProfileDetailSkillView(skill: tools)
+                        }
+                        .padding(.top, 10)
                     }
                 }
             }
