@@ -95,6 +95,7 @@ struct LoginView: View {
             // Loader
             LoaderView()
                 .opacity(self.viewModel.isLoading ? 1 : 0)
+                .ignoresSafeArea()
         }
         .animation(.default, value: self.viewModel.isAdmin)
         .animation(.default, value: self.viewModel.isLoading)

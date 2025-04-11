@@ -74,7 +74,7 @@ struct CreateProfileView: View {
                                     title: "Basic Info"
                                 )
                                 // TextFields
-                                LazyVStack(spacing: 20) {
+                                VStack(spacing: 20) {
                                     // Name Textfield
                                     CreateProfileNameTextField(
                                         value: self.$viewModel.basicInfo.name
@@ -150,7 +150,7 @@ struct CreateProfileView: View {
                                         }
                                     )
                                 } else {
-                                    LazyVStack(spacing: 20) {
+                                    VStack(spacing: 20) {
                                         // Previous Experience Listing
                                         ForEach(self.viewModel.previousExperience.indices, id: \.self) { index in
                                             CreateProfileExperienceView(
@@ -192,7 +192,7 @@ struct CreateProfileView: View {
                                     title: "Qualifications"
                                 )
                                 // Education Listing
-                                LazyVStack(spacing: 20) {
+                                VStack(spacing: 20) {
                                     ForEach(self.viewModel.education.indices, id: \.self) { index in
                                         CreateProfileEducationView(
                                             education: self.$viewModel.education[index],
@@ -239,7 +239,7 @@ struct CreateProfileView: View {
                                         }
                                     )
                                 } else {
-                                    LazyVStack(spacing: 20) {
+                                    VStack(spacing: 20) {
                                         // Certificates Listing
                                         ForEach(self.viewModel.certificates.indices, id: \.self) { index in
                                             CreateProfileCertificateView(
@@ -285,7 +285,7 @@ struct CreateProfileView: View {
                                         }
                                     )
                                 } else {
-                                    LazyVStack(spacing: 20) {
+                                    VStack(spacing: 20) {
                                         // Awards Listing
                                         ForEach(self.viewModel.awards.indices, id: \.self) { index in
                                             CreateProfileAwardView(
@@ -325,7 +325,7 @@ struct CreateProfileView: View {
                                         }
                                     )
                                 } else {
-                                    LazyVStack(spacing: 10) {
+                                    VStack(spacing: 10) {
                                         // Awards Listing
                                         ForEach(self.viewModel.technicalSkills.indices, id: \.self) { index in
                                             CreateProfileSkillView(
@@ -365,7 +365,7 @@ struct CreateProfileView: View {
                                         }
                                     )
                                 } else {
-                                    LazyVStack(spacing: 10) {
+                                    VStack(spacing: 10) {
                                         // Awards Listing
                                         ForEach(self.viewModel.nonTechnicalSkills.indices, id: \.self) { index in
                                             CreateProfileSkillView(
@@ -405,7 +405,7 @@ struct CreateProfileView: View {
                                         }
                                     )
                                 } else {
-                                    LazyVStack(spacing: 10) {
+                                    VStack(spacing: 10) {
                                         // Tools Listing
                                         ForEach(self.viewModel.tools.indices, id: \.self) { index in
                                             CreateProfileSkillView(
@@ -476,6 +476,9 @@ struct CreateProfileView: View {
             }
             .padding(.horizontal, 16)
             .padding(.vertical, 20)
+            .onTapGesture {
+                self.hideKeyboard()
+            }
             // In order to pick designation in Basic Information
             DesignationPickerView(
                 isShowPicker: self.$viewModel.isShowDesignationPicker,

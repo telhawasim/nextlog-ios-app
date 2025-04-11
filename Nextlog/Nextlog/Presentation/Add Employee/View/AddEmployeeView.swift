@@ -149,6 +149,9 @@ struct AddEmployeeView: View {
                     self.viewModel.selectedImage = image
                 }
             }
+            .onTapGesture {
+                self.hideKeyboard()
+            }
             // Date of Birth Picker
             DatePickerView(
                 isShowDatePicker: self.$viewModel.isShowDOBDatePicker,

@@ -29,6 +29,7 @@ struct HomeEmployeeListRowView: View {
                     .clipShape(Circle())
             } else {
                 Circle()
+                    .foregroundStyle(Color.colorF7F7F7)
                     .frame(width: 73)
                     .overlay(
                         ProgressView()
@@ -54,7 +55,8 @@ struct HomeEmployeeListRowView: View {
         .padding(.horizontal, 4)
         .contentShape(Rectangle())
         .task {
-            Utilities.shared.fetchImage(from: self.employee.avatar ?? "") { image in
+            let url = APIEndpoint.baseURL + (self.employee.avatar ?? "")
+            Utilities.shared.fetchImage(from: url) { image in
                 if let userImage = image {
                     self.userImage = userImage
                 } else {

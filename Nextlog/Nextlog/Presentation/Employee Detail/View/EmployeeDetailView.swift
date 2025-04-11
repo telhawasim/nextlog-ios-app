@@ -32,6 +32,7 @@ struct EmployeeDetailView: View {
                         if let userImage = self.userImage {
                             Image(uiImage: userImage)
                                 .resizable()
+                                .aspectRatio(contentMode: .fit)
                                 .frame(width: proxy.size.width, height: proxy.size.height * 0.4)
                         }
                         // Background
@@ -232,7 +233,8 @@ extension EmployeeDetailView {
     
     //MARK: - FETCH EMPLOYEE PROFILE IMAGE -
     private func fetchEmployeeProfileImage() {
-        Utilities.shared.fetchImage(from: self.viewModel.model?.avatar ?? "") { image in
+        let url = APIEndpoint.baseURL + (self.viewModel.model?.avatar ?? "")
+        Utilities.shared.fetchImage(from: url) { image in
             if let userImage = image {
                 self.userImage = userImage
             } else {

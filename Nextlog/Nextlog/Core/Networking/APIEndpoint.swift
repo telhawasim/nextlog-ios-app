@@ -9,7 +9,7 @@ import Alamofire
 
 enum APIEndpoint {
     
-    static let baseURL = "http://127.0.0.1:8000/"
+    static let baseURL = "http:/10.28.86.69:8080/"
     
     // AUTHENTICATION
     case login
