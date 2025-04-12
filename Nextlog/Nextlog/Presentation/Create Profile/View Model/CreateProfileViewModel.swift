@@ -386,6 +386,42 @@ extension CreateProfileView.ViewModel {
         }
     }
     
+    //MARK: - VALIDATE FOR SKILLS -
+    func validationForSkills() -> Bool {
+        var errorMessage: String?
+        
+        if (self.technicalSkills.count > 0) {
+            for technicalSkill in self.technicalSkills {
+                if technicalSkill.name.isEmpty {
+                    errorMessage = "Technical skill is required"
+                }
+            }
+        }
+        
+        if (errorMessage == nil) && (self.nonTechnicalSkills.count > 0) {
+            for nonTechnicalSkill in self.nonTechnicalSkills {
+                if nonTechnicalSkill.name.isEmpty {
+                    errorMessage = "Non-Technical skill is required"
+                }
+            }
+        }
+        
+        if (errorMessage == nil) && (self.tools.count > 0) {
+            for tool in self.tools {
+                if tool.name.isEmpty {
+                    errorMessage = "Tool is required"
+                }
+            }
+        }
+        
+        if let error = errorMessage {
+            self.showErrorAlert(error)
+            return false
+        } else {
+            return true
+        }
+    }
+    
     //MARK: - SET BASIC INFO -
     private func setBasicInfo() {
         var basicInformation: BasicInfoUserModel

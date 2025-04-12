@@ -710,9 +710,11 @@ extension CreateProfileView {
                 }
             }
         case .skills:
-            self.viewModel.addSkillAPI { (isSuccess) in
-                if (isSuccess) {
-                    self.navigateToProfileDetail()
+            if (self.viewModel.validationForSkills()) {
+                self.viewModel.addSkillAPI { (isSuccess) in
+                    if (isSuccess) {
+                        self.navigateToProfileDetail()
+                    }
                 }
             }
         case .projects:
